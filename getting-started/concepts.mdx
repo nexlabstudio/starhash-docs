@@ -1,0 +1,236 @@
+---
+title: Core Concepts
+description: Understand the fundamental concepts behind StarHash USSD flows.
+---
+
+# Core Concepts
+
+Understanding these concepts will help you build better USSD applications.
+
+## USSD Basics
+
+USSD (Unstructured Supplementary Service Data) is a protocol used by GSM phones to communicate with service providers. Unlike SMS, USSD creates a real-time session.
+
+### Key Characteristics
+
+- **Session-based**: Each interaction is part of a continuous session
+- **Real-time**: Responses are instant, no store-and-forward
+- **Menu-driven**: Users navigate by entering numbers
+- **Text-only**: No images, limited to 182 characters per screen
+- **Timeout**: Sessions expire after ~3 minutes of inactivity
+
+## Flows
+
+A **flow** is a complete USSD application. It defines all the screens, logic, and data handling for your service.
+
+```dart
+UssdFlow(
+  id: 'balance-checker',
+  name: 'Balance Checker',
+  nodes: [...],
+  startNodeId: 'welcome',
+)
+```
+
+### Flow Properties
+
+| Property | Description |
+|----------|-------------|
+| `id` | Unique identifier |
+| `name` | Human-readable name |
+| `nodes` | List of all nodes in the flow |
+| `startNodeId` | ID of the first node to execute |
+
+## Nodes
+
+**Nodes** are the building blocks of a flow. Each node represents a screen or action.
+
+### Node Types
+
+<Tabs>
+  <TabItem label="Menu">
+    Displays options for the user to choose from.
+
+    ```dart
+    MenuNode(
+      id: 'main-menu',
+      title: 'Select an option:',
+      options: [
+        MenuOption(label: 'Balance', nextNodeId: 'balance'),
+        MenuOption(label: 'Transfer', nextNodeId: 'transfer'),
+      ],
+    )
+    ```
+
+    **User sees:**
+    ```
+    Select an option:
+    1. Balance
+    2. Transfer
+    ```
+  </TabItem>
+
+  <TabItem label="Input">
+    Prompts the user to enter data.
+
+    ```dart
+    InputNode(
+      id: 'get-phone',
+      prompt: 'Enter phone number:',
+      variableName: 'phone',
+      nextNodeId: 'confirm',
+    )
+    ```
+
+    **User sees:**
+    ```
+    Enter phone number:
+    ```
+  </TabItem>
+
+  <TabItem label="Display">
+    Shows a message and continues to the next node.
+
+    ```dart
+    DisplayNode(
+      id: 'balance',
+      message: 'Your balance is \${balance}',
+      nextNodeId: 'main-menu',
+    )
+    ```
+  </TabItem>
+
+  <TabItem label="End">
+    Terminates the session with a final message.
+
+    ```dart
+    EndNode(
+      id: 'goodbye',
+      message: 'Thank you for using our service!',
+    )
+    ```
+  </TabItem>
+
+  <TabItem label="Branch">
+    Routes to different nodes based on conditions.
+
+    ```dart
+    BranchNode(
+      id: 'check-balance',
+      conditions: [
+        Condition(
+          expression: 'balance > 100',
+          nextNodeId: 'high-balance',
+        ),
+        Condition(
+          expression: 'balance > 0',
+          nextNodeId: 'low-balance',
+        ),
+      ],
+      defaultNodeId: 'zero-balance',
+    )
+    ```
+  </TabItem>
+
+  <TabItem label="Action">
+    Executes backend logic (API calls, database operations).
+
+    ```dart
+    ActionNode(
+      id: 'fetch-balance',
+      actionType: 'http',
+      config: {
+        'url': 'https://api.example.com/balance',
+        'method': 'GET',
+      },
+      resultVariable: 'balance',
+      nextNodeId: 'show-balance',
+    )
+    ```
+  </TabItem>
+</Tabs>
+
+## Sessions
+
+A **session** represents a single user interaction from dial to end.
+
+```dart
+UssdSession(
+  id: 'sess_abc123',
+  flowId: 'balance-checker',
+  phoneNumber: '+233201234567',
+  provider: 'africas_talking',
+  variables: {'balance': '50.00'},
+  currentNodeId: 'main-menu',
+  state: SessionState.active,
+)
+```
+
+### Session Lifecycle
+
+```
+User dials *123# → Session created → Flow starts
+       ↓
+User enters "1" → Input processed → Next node
+       ↓
+User enters "2" → Input processed → Next node
+       ↓
+End node reached → Session terminated
+```
+
+### Session States
+
+| State | Description |
+|-------|-------------|
+| `active` | Session is ongoing |
+| `completed` | User reached an End node |
+| `timeout` | Session expired due to inactivity |
+| `error` | An error occurred during execution |
+
+## Variables
+
+**Variables** store data during a session. They can be:
+
+- **User input**: Data entered by the user
+- **System variables**: Phone number, session ID, timestamp
+- **API responses**: Data fetched from external services
+
+### Using Variables
+
+Reference variables in node content using `${variableName}`:
+
+```
+Welcome, ${name}!
+Your balance is ${balance} GHS.
+```
+
+### System Variables
+
+| Variable | Description |
+|----------|-------------|
+| `$phone` | User's phone number |
+| `$sessionId` | Current session ID |
+| `$timestamp` | Current timestamp |
+| `$provider` | USSD provider name |
+
+## Providers
+
+**Providers** are USSD gateways that connect your application to telecom networks. StarHash supports:
+
+- Africa's Talking
+- Hubtel
+- Arkesel
+- Nalo
+
+Each provider has a different request/response format. StarHash adapters handle the translation automatically.
+
+## Next Steps
+
+<Cards>
+  <Card title="Flow Builder" icon="pencil" href="/studio/flow-builder">
+    Learn to use the visual editor
+  </Card>
+  <Card title="Node Reference" icon="shapes" href="/studio/nodes">
+    Detailed documentation for all node types
+  </Card>
+</Cards>

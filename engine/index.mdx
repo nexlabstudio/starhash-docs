@@ -1,0 +1,144 @@
+---
+title: Engine Overview
+description: StarHash Engine is the backend API that powers USSD flow execution.
+---
+
+# Engine Overview
+
+The StarHash Engine is a Dart Frog backend that executes USSD flows and manages sessions.
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      StarHash Engine                         │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │
+│  │   Auth   │  │  Flows   │  │ Sessions │  │ Analytics│    │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘    │
+│                                                              │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │                   Flow Executor                       │   │
+│  │  • Session management   • Variable resolution         │   │
+│  │  • Node execution       • Provider adapters           │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                                                              │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │                    Data Layer                         │   │
+│  │      PostgreSQL          │         Redis              │   │
+│  │   (Flows, Users, etc.)   │   (Sessions, Cache)        │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## Key Components
+
+### API Routes
+
+| Route | Description |
+|-------|-------------|
+| `/api/auth` | Authentication (login, register, OAuth) |
+| `/api/flows` | Flow CRUD operations |
+| `/api/instances` | Deployment management |
+| `/api/sessions` | Session history and debugging |
+| `/api/simulator` | Test flow execution |
+| `/api/analytics` | Usage statistics |
+| `/hooks/:provider` | USSD provider callbacks |
+
+### Core Services
+
+| Service | Responsibility |
+|---------|---------------|
+| `FlowExecutor` | Executes flow logic |
+| `SessionManager` | Manages USSD sessions |
+| `AdapterService` | Translates provider formats |
+| `AuthService` | Handles authentication |
+
+## Technology Stack
+
+| Component | Technology |
+|-----------|------------|
+| Framework | Dart Frog |
+| Database | PostgreSQL |
+| Cache | Redis |
+| Auth | JWT + OAuth 2.0 |
+
+## Base URL
+
+| Environment | URL |
+|-------------|-----|
+| Production | `https://api.starhash.dev` |
+| Staging | `https://staging-api.starhash.dev` |
+| Local | `http://localhost:8080` |
+
+## Request Format
+
+All API requests should:
+
+- Use `Content-Type: application/json`
+- Include `Authorization: Bearer <token>` for protected routes
+- Send data in JSON format
+
+```bash
+curl -X POST https://api.starhash.dev/api/flows \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbG..." \
+  -d '{"name": "My Flow", "nodes": [...]}'
+```
+
+## Response Format
+
+All responses follow this structure:
+
+```json
+{
+  "success": true,
+  "data": { ... },
+  "meta": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "requestId": "req_abc123"
+  }
+}
+```
+
+Error responses:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid flow configuration",
+    "details": [...]
+  }
+}
+```
+
+## Rate Limits
+
+| Endpoint | Limit |
+|----------|-------|
+| `/api/*` | 100 req/min |
+| `/hooks/*` | 1000 req/min |
+| `/api/auth/login` | 10 req/min |
+
+Rate limit headers:
+
+```
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1705312200
+```
+
+## Next Steps
+
+<Cards>
+  <Card title="Authentication" icon="lock" href="/engine/authentication">
+    Set up authentication
+  </Card>
+  <Card title="API Reference" icon="code" href="/engine/api-reference">
+    Complete API documentation
+  </Card>
+</Cards>

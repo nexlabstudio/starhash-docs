@@ -1,0 +1,179 @@
+---
+title: Flow Builder
+description: Master the visual flow builder in StarHash Studio.
+---
+
+# Flow Builder
+
+The flow builder is where you design your USSD application logic.
+
+## Creating a Flow
+
+1. From the dashboard, click **New Flow**
+2. Enter a name and optional description
+3. Click **Create**
+
+You'll be taken to an empty canvas ready for design.
+
+## Canvas Navigation
+
+### Pan
+
+- **Mouse**: Hold `Space` and drag
+- **Trackpad**: Two-finger scroll
+
+### Zoom
+
+- **Mouse**: Scroll wheel
+- **Trackpad**: Pinch gesture
+- **Buttons**: Use `+` and `-` in the bottom-right corner
+
+### Fit to View
+
+Press `F` or click the "Fit" button to center all nodes in view.
+
+## Building Your Flow
+
+### Step 1: Add the Start Node
+
+Every flow needs a starting point:
+
+1. Add a **Menu** or **Display** node
+2. Right-click → **Set as Start Node**
+3. The node shows a green "Start" badge
+
+### Step 2: Add More Nodes
+
+Build out your flow by adding nodes:
+
+```
+[Start: Menu] → [Input] → [Action] → [Display] → [End]
+```
+
+### Step 3: Connect Nodes
+
+Create the flow path:
+
+1. Click the output port (right side of node)
+2. Drag to the input port (left side of target node)
+3. Release to connect
+
+### Step 4: Configure Each Node
+
+Click a node to open its properties:
+
+- Set the content/message
+- Configure options (for menus)
+- Set variable names (for inputs)
+- Add conditions (for branches)
+
+## Working with Connections
+
+### Creating Connections
+
+- Click and drag from output to input ports
+- Menu nodes have multiple outputs (one per option)
+- Other nodes typically have one output
+
+### Deleting Connections
+
+- Click on a connection line
+- Press `Delete` or `Backspace`
+
+### Reconnecting
+
+- Drag the connection endpoint to a new node
+- Or delete and create a new connection
+
+## Node Operations
+
+### Selecting
+
+- **Single**: Click on a node
+- **Multiple**: `Shift + Click` or drag a selection box
+- **All**: `Cmd/Ctrl + A`
+
+### Moving
+
+- Drag selected nodes to reposition
+- Use arrow keys for precise movement
+
+### Duplicating
+
+- `Cmd/Ctrl + D` to duplicate selected nodes
+- Connections within the selection are preserved
+
+### Deleting
+
+- Select nodes and press `Delete`
+- Or right-click → **Delete**
+
+## Flow Organization
+
+### Naming Conventions
+
+Use clear, descriptive names:
+
+```
+Good: "main-menu", "get-phone-number", "confirm-transfer"
+Bad: "node1", "menu", "x"
+```
+
+### Layout Tips
+
+- Keep the flow left-to-right or top-to-bottom
+- Group related nodes together
+- Use consistent spacing
+- Add comments for complex sections
+
+### Comments
+
+Add notes to your flow:
+
+1. Right-click on canvas
+2. Select **Add Comment**
+3. Enter your note
+
+Comments are visible only in the editor.
+
+## Version History
+
+Studio auto-saves your work and maintains version history:
+
+1. Click **History** in the toolbar
+2. Browse previous versions by timestamp
+3. Click to preview
+4. **Restore** to revert to that version
+
+<Warning>
+  Restoring a version overwrites current changes. Make sure to save first if needed.
+</Warning>
+
+## Collaboration
+
+### Sharing
+
+Share your flow with team members:
+
+1. Click **Share** in the toolbar
+2. Add collaborators by email
+3. Set permissions (View, Edit, Admin)
+
+### Permissions
+
+| Role | Can View | Can Edit | Can Deploy | Can Delete |
+|------|----------|----------|------------|------------|
+| Viewer | Yes | No | No | No |
+| Editor | Yes | Yes | No | No |
+| Admin | Yes | Yes | Yes | Yes |
+
+## Next Steps
+
+<Cards>
+  <Card title="Node Types" icon="shapes" href="/studio/nodes">
+    Learn about all node types in detail
+  </Card>
+  <Card title="Variables" icon="code" href="/studio/variables">
+    Use dynamic content in your flows
+  </Card>
+</Cards>

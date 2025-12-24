@@ -1,0 +1,92 @@
+---
+title: StarHash Documentation
+description: Visual USSD application builder for Africa. Build, test, and deploy USSD applications without writing code.
+---
+
+# StarHash
+
+Visual USSD application builder for Africa. Build, test, and deploy USSD applications without writing code.
+
+<Image src="https://raw.githubusercontent.com/nexlabstudio/starhash/main/assets/hero.png" alt="StarHash Studio" zoom />
+
+## What is StarHash?
+
+StarHash is a complete platform for building USSD applications that run across multiple African telecom providers. Instead of writing complex callback handlers, you design flows visually and StarHash handles the rest.
+
+## Key Features
+
+<Cards>
+  <Card title="Visual Editor" icon="pencil">
+    Drag-and-drop flow builder. Design menus, inputs, and logic without code.
+  </Card>
+  <Card title="Multi-Provider" icon="globe">
+    Works with Africa's Talking, Hubtel, Arkesel, and Nalo out of the box.
+  </Card>
+  <Card title="Real-time Testing" icon="play">
+    Test your flows instantly with the built-in simulator before going live.
+  </Card>
+  <Card title="Session Debugging" icon="bug">
+    X-Ray console shows exactly what happened in every user session.
+  </Card>
+</Cards>
+
+## Platform Components
+
+| Component | Description |
+|-----------|-------------|
+| [Studio](/studio) | Web-based visual flow builder |
+| [Engine](/engine) | Backend API that executes USSD flows |
+| [Companion](/companion) | Mobile app for testing on real devices |
+
+## Quick Links
+
+<Cards>
+  <Card title="Get Started" icon="rocket" href="/getting-started">
+    Install StarHash and build your first flow in minutes.
+  </Card>
+  <Card title="API Reference" icon="code" href="/engine/api-reference">
+    Complete REST API documentation for the Engine.
+  </Card>
+  <Card title="Provider Setup" icon="plug" href="/providers">
+    Connect your USSD shortcode to StarHash.
+  </Card>
+</Cards>
+
+## Supported Providers
+
+| Provider | Countries | Status |
+|----------|-----------|--------|
+| Africa's Talking | Kenya, Nigeria, Uganda | Supported |
+| Hubtel | Ghana | Supported |
+| Arkesel | Ghana | Supported |
+| Nalo | Ghana, Nigeria | Supported |
+
+## Example Flow
+
+```dart
+import 'package:starhash_core/starhash_core.dart';
+
+final flow = UssdFlow(
+  id: 'welcome-flow',
+  name: 'Welcome Menu',
+  nodes: [
+    MenuNode(
+      id: 'main-menu',
+      title: 'Welcome to StarHash',
+      options: [
+        MenuOption(label: 'Check Balance', nextNodeId: 'balance'),
+        MenuOption(label: 'Buy Airtime', nextNodeId: 'airtime'),
+        MenuOption(label: 'Exit', nextNodeId: 'goodbye'),
+      ],
+    ),
+    // ... more nodes
+  ],
+  startNodeId: 'main-menu',
+);
+```
+
+## Need Help?
+
+- [FAQ](/resources/faq) - Common questions answered
+- [Troubleshooting](/resources/troubleshooting) - Fix common issues
+- [GitHub Issues](https://github.com/nexlabstudio/starhash/issues) - Report bugs or request features

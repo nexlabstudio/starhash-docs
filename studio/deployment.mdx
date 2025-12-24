@@ -1,0 +1,216 @@
+---
+title: Deployment
+description: Deploy your USSD flows to production.
+---
+
+# Deployment
+
+When your flow is ready, deploy it to receive real USSD traffic.
+
+## Prerequisites
+
+Before deploying, ensure you have:
+
+- A tested, validated flow
+- A USSD shortcode from a supported provider
+- Provider API credentials
+
+## Deployment Steps
+
+### Step 1: Validate Your Flow
+
+Click **Validate** in the toolbar. Fix any errors:
+
+| Error | Solution |
+|-------|----------|
+| No start node | Set a node as the start |
+| Orphan nodes | Connect or delete unused nodes |
+| Missing connections | Connect all required outputs |
+| Invalid expressions | Fix syntax errors |
+
+### Step 2: Create an Instance
+
+Flows can have multiple instances (e.g., staging, production):
+
+1. Click **Deploy** in the toolbar
+2. Click **New Instance**
+3. Enter a name (e.g., "Production")
+4. Select environment type
+
+### Step 3: Configure Provider
+
+Select your USSD provider and enter credentials:
+
+<Tabs>
+  <TabItem label="Africa's Talking">
+    | Field | Description |
+    |-------|-------------|
+    | Username | Your AT username |
+    | API Key | API key from dashboard |
+    | Shortcode | Your USSD shortcode |
+  </TabItem>
+
+  <TabItem label="Hubtel">
+    | Field | Description |
+    |-------|-------------|
+    | Client ID | Hubtel client ID |
+    | Client Secret | Hubtel client secret |
+    | Shortcode | Your USSD shortcode |
+  </TabItem>
+
+  <TabItem label="Arkesel">
+    | Field | Description |
+    |-------|-------------|
+    | API Key | Arkesel API key |
+    | Shortcode | Your USSD shortcode |
+  </TabItem>
+
+  <TabItem label="Nalo">
+    | Field | Description |
+    |-------|-------------|
+    | API Key | Nalo API key |
+    | Shortcode | Your USSD shortcode |
+  </TabItem>
+</Tabs>
+
+### Step 4: Set the Callback URL
+
+Copy the generated callback URL and configure it in your provider's dashboard:
+
+```
+https://api.starhash.dev/hooks/{provider}/{instance_id}
+```
+
+Example for Africa's Talking:
+```
+https://api.starhash.dev/hooks/africas_talking/inst_abc123
+```
+
+### Step 5: Deploy
+
+Click **Publish** to deploy your flow.
+
+## Instance Management
+
+### Viewing Instances
+
+See all instances in the **Instances** tab:
+
+| Instance | Environment | Status | Traffic |
+|----------|-------------|--------|---------|
+| Production | Live | Active | 1.2k/day |
+| Staging | Test | Active | 50/day |
+
+### Instance Actions
+
+| Action | Description |
+|--------|-------------|
+| **Pause** | Stop receiving traffic temporarily |
+| **Resume** | Continue receiving traffic |
+| **Update** | Deploy new flow version |
+| **Delete** | Remove instance permanently |
+
+### Updating a Deployment
+
+When you update your flow:
+
+1. Make changes in the editor
+2. Click **Deploy** → Select instance
+3. Click **Update**
+4. Confirm the update
+
+<Warning>
+  Updates are applied immediately. Consider using a staging instance first.
+</Warning>
+
+## Rollback
+
+If something goes wrong:
+
+1. Go to instance **Settings** → **Versions**
+2. Find the previous working version
+3. Click **Rollback**
+
+Version history is retained for 30 days.
+
+## Environment Variables
+
+Configure per-instance variables:
+
+1. Go to instance **Settings** → **Variables**
+2. Add key-value pairs:
+
+```
+API_URL = https://api.myservice.com
+API_KEY = sk_live_xxx
+DEBUG = false
+```
+
+Access in flows as `${env.API_URL}`.
+
+## Custom Domains
+
+Use your own domain for callbacks:
+
+1. Go to **Settings** → **Domains**
+2. Add your domain (e.g., `ussd.myapp.com`)
+3. Configure DNS:
+
+```
+Type: CNAME
+Name: ussd
+Value: hooks.starhash.dev
+```
+
+4. Verify and activate
+
+Your callback URL becomes:
+```
+https://ussd.myapp.com/hooks/{provider}/{instance_id}
+```
+
+## Monitoring
+
+### Real-time Dashboard
+
+Monitor active sessions:
+
+- Current active sessions
+- Requests per minute
+- Error rate
+- Average session duration
+
+### Alerts
+
+Set up alerts for:
+
+| Alert | Trigger |
+|-------|---------|
+| Error spike | Error rate > 5% |
+| Latency | Response time > 2s |
+| Volume drop | Traffic < 50% of average |
+
+Configure in **Settings** → **Alerts**.
+
+## Production Checklist
+
+Before going live:
+
+- [ ] Flow tested thoroughly
+- [ ] All API endpoints are production URLs
+- [ ] Error handling covers all cases
+- [ ] Provider credentials are for production
+- [ ] Callback URL configured correctly
+- [ ] Alerts set up
+- [ ] Team notified
+
+## Next Steps
+
+<Cards>
+  <Card title="Providers" icon="plug" href="/providers">
+    Provider-specific setup guides
+  </Card>
+  <Card title="API Reference" icon="code" href="/engine/api-reference">
+    Manage deployments via API
+  </Card>
+</Cards>

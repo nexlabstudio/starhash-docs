@@ -1,0 +1,102 @@
+{
+  "$schema": "https://docs.page/schema.json",
+  "name": "StarHash",
+  "description": "Visual USSD application builder for Africa",
+  "logo": {
+    "light": "https://raw.githubusercontent.com/nexlabstudio/starhash/main/assets/logo.png",
+    "dark": "https://raw.githubusercontent.com/nexlabstudio/starhash/main/assets/logo-dark.png"
+  },
+  "theme": {
+    "primaryLight": "#6366F1",
+    "primaryDark": "#818CF8"
+  },
+  "social": {
+    "x": "starhash_dev"
+  },
+  "anchors": [
+    {
+      "title": "Studio",
+      "icon": "pencil",
+      "href": "https://studio.starhash.dev"
+    },
+    {
+      "title": "Support",
+      "icon": "help-circle",
+      "href": "mailto:support@starhash.dev"
+    }
+  ],
+  "tabs": [
+    {
+      "id": "docs",
+      "title": "Documentation",
+      "href": "/"
+    },
+    {
+      "id": "api",
+      "title": "API Reference",
+      "href": "/engine"
+    },
+    {
+      "id": "providers",
+      "title": "Providers",
+      "href": "/providers"
+    }
+  ],
+  "sidebar": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        { "title": "Overview", "href": "/getting-started" },
+        { "title": "Account Setup", "href": "/getting-started/installation" },
+        { "title": "Quickstart", "href": "/getting-started/quickstart" },
+        { "title": "Core Concepts", "href": "/getting-started/concepts" }
+      ]
+    },
+    {
+      "group": "Studio",
+      "pages": [
+        { "title": "Overview", "href": "/studio" },
+        { "title": "Flow Builder", "href": "/studio/flow-builder" },
+        { "title": "Node Types", "href": "/studio/nodes" },
+        { "title": "Variables", "href": "/studio/variables" },
+        { "title": "Testing", "href": "/studio/testing" },
+        { "title": "Deployment", "href": "/studio/deployment" }
+      ]
+    },
+    {
+      "group": "Companion App",
+      "pages": [
+        { "title": "Overview", "href": "/companion" },
+        { "title": "Testing on Device", "href": "/companion/testing" }
+      ]
+    },
+    {
+      "group": "Providers",
+      "pages": [
+        { "title": "Overview", "href": "/providers" },
+        { "title": "Africa's Talking", "href": "/providers/africas-talking" },
+        { "title": "Hubtel", "href": "/providers/hubtel" },
+        { "title": "Arkesel", "href": "/providers/arkesel" },
+        { "title": "Nalo", "href": "/providers/nalo" }
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        { "title": "Overview", "href": "/engine" },
+        { "title": "Authentication", "href": "/engine/authentication" },
+        { "title": "Endpoints", "href": "/engine/api-reference" },
+        { "title": "Webhooks", "href": "/engine/webhooks" },
+        { "title": "Enterprise", "href": "/engine/self-hosting" }
+      ]
+    },
+    {
+      "group": "Resources",
+      "pages": [
+        { "title": "FAQ", "href": "/resources/faq" },
+        { "title": "Troubleshooting", "href": "/resources/troubleshooting" },
+        { "title": "Changelog", "href": "/resources/changelog" }
+      ]
+    }
+  ]
+}

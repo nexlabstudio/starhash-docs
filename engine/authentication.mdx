@@ -1,0 +1,255 @@
+---
+title: Authentication
+description: Authenticate with the StarHash Engine API.
+---
+
+# Authentication
+
+The Engine uses JWT (JSON Web Tokens) for authentication.
+
+## Overview
+
+1. Obtain a token via login or OAuth
+2. Include the token in subsequent requests
+3. Refresh the token before expiry
+
+## Email/Password Authentication
+
+### Register
+
+```bash
+POST /api/auth/register
+```
+
+Request:
+```json
+{
+  "email": "user@example.com",
+  "password": "securepassword123",
+  "name": "John Doe"
+}
+```
+
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "user": {
+      "id": "usr_abc123",
+      "email": "user@example.com",
+      "name": "John Doe"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIs...",
+    "refreshToken": "ref_xyz789"
+  }
+}
+```
+
+### Login
+
+```bash
+POST /api/auth/login
+```
+
+Request:
+```json
+{
+  "email": "user@example.com",
+  "password": "securepassword123"
+}
+```
+
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "user": {
+      "id": "usr_abc123",
+      "email": "user@example.com",
+      "name": "John Doe"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIs...",
+    "refreshToken": "ref_xyz789"
+  }
+}
+```
+
+## OAuth Authentication
+
+### Google
+
+Redirect users to:
+
+```
+GET /api/auth/google
+```
+
+After authentication, users are redirected to your callback URL with a token.
+
+### GitHub
+
+Redirect users to:
+
+```
+GET /api/auth/github
+```
+
+After authentication, users are redirected to your callback URL with a token.
+
+### OAuth Flow
+
+```
+1. User clicks "Sign in with Google"
+           ↓
+2. Redirect to /api/auth/google
+           ↓
+3. User authenticates with Google
+           ↓
+4. Redirect to your callback with token
+           ↓
+5. Store token, user is logged in
+```
+
+## Using Tokens
+
+Include the token in the `Authorization` header:
+
+```bash
+curl https://api.starhash.dev/api/flows \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."
+```
+
+### Token Format
+
+Tokens are JWTs with the following payload:
+
+```json
+{
+  "sub": "usr_abc123",
+  "email": "user@example.com",
+  "iat": 1705312200,
+  "exp": 1705398600
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `sub` | User ID |
+| `email` | User email |
+| `iat` | Issued at timestamp |
+| `exp` | Expiry timestamp |
+
+### Token Expiry
+
+| Token Type | Expiry |
+|------------|--------|
+| Access token | 24 hours |
+| Refresh token | 30 days |
+
+## Refreshing Tokens
+
+Before your token expires, refresh it:
+
+```bash
+POST /api/auth/refresh
+```
+
+Request:
+```json
+{
+  "refreshToken": "ref_xyz789"
+}
+```
+
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIs...",
+    "refreshToken": "ref_newtoken"
+  }
+}
+```
+
+## Logout
+
+Invalidate the current token:
+
+```bash
+POST /api/auth/logout
+```
+
+Request:
+```json
+{
+  "refreshToken": "ref_xyz789"
+}
+```
+
+## API Keys
+
+For server-to-server communication, use API keys:
+
+### Creating an API Key
+
+1. Go to **Settings** → **API Keys**
+2. Click **Create Key**
+3. Enter a name and select permissions
+4. Copy the key (shown only once)
+
+### Using API Keys
+
+```bash
+curl https://api.starhash.dev/api/flows \
+  -H "X-API-Key: sk_live_abc123..."
+```
+
+### API Key Permissions
+
+| Permission | Access |
+|------------|--------|
+| `flows:read` | Read flows |
+| `flows:write` | Create/update flows |
+| `sessions:read` | Read sessions |
+| `analytics:read` | Read analytics |
+
+## Error Responses
+
+| Status | Code | Description |
+|--------|------|-------------|
+| 401 | `UNAUTHORIZED` | Missing or invalid token |
+| 401 | `TOKEN_EXPIRED` | Token has expired |
+| 403 | `FORBIDDEN` | Insufficient permissions |
+
+Example:
+```json
+{
+  "success": false,
+  "error": {
+    "code": "TOKEN_EXPIRED",
+    "message": "Your session has expired. Please log in again."
+  }
+}
+```
+
+## Security Best Practices
+
+1. **Never expose tokens** in client-side code or URLs
+2. **Use HTTPS** for all API requests
+3. **Rotate API keys** regularly
+4. **Set minimal permissions** on API keys
+5. **Implement token refresh** to avoid re-login
+
+## Next Steps
+
+<Cards>
+  <Card title="API Reference" icon="code" href="/engine/api-reference">
+    Explore all API endpoints
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/engine/webhooks">
+    Set up USSD callbacks
+  </Card>
+</Cards>

@@ -1,0 +1,265 @@
+---
+title: Troubleshooting
+description: Fix common issues with StarHash.
+---
+
+# Troubleshooting
+
+Solutions to common problems you might encounter.
+
+## Flow Builder Issues
+
+### Can't add nodes to the canvas
+
+**Symptoms**: Clicking "Add Node" does nothing, or nodes don't appear.
+
+**Solutions**:
+1. Refresh the page
+2. Clear browser cache
+3. Try a different browser (Chrome recommended)
+4. Disable browser extensions that might interfere
+
+### Connections won't save
+
+**Symptoms**: Node connections disappear after saving.
+
+**Solutions**:
+1. Ensure both nodes are properly placed on canvas
+2. Check that connection is between output → input (not input → input)
+3. Verify you have edit permissions
+
+### Flow won't save
+
+**Symptoms**: Error message when saving, or changes are lost.
+
+**Solutions**:
+1. Check your internet connection
+2. Look for validation errors (red indicators)
+3. Ensure flow has a start node
+4. Try saving again after a few seconds
+
+---
+
+## Deployment Issues
+
+### "No start node" error
+
+**Cause**: Every flow needs a designated starting point.
+
+**Solution**:
+1. Right-click on the first node
+2. Select **Set as Start Node**
+3. Look for the green "Start" badge
+
+### "Orphan nodes detected" error
+
+**Cause**: Some nodes aren't connected to the main flow.
+
+**Solution**:
+1. Click **Validate** to highlight orphan nodes
+2. Connect them to the flow or delete them
+3. All nodes must be reachable from the start node
+
+### "Invalid callback URL" from provider
+
+**Cause**: The callback URL isn't configured correctly.
+
+**Solution**:
+1. Copy the exact URL from StarHash (**Instance** → **Settings**)
+2. Ensure no trailing slashes or spaces
+3. Make sure you're using HTTPS
+4. Verify the instance ID is correct
+
+### Deployment says "success" but flow doesn't work
+
+**Causes**:
+- Provider callback not configured
+- Wrong environment (sandbox vs production)
+- Flow has logic errors
+
+**Solutions**:
+1. Verify callback URL in provider dashboard
+2. Check you're using production credentials
+3. Test in the simulator first
+
+---
+
+## Session Issues
+
+### Sessions timing out
+
+**Cause**: USSD sessions expire after 2-3 minutes of inactivity.
+
+**Solutions**:
+1. Keep flows concise (fewer steps)
+2. Reduce API call times
+3. Use clear prompts so users respond quickly
+4. This is normal USSD behavior - design accordingly
+
+### Sessions not appearing in dashboard
+
+**Cause**: Sessions may be filtered or delayed.
+
+**Solutions**:
+1. Check date filters
+2. Refresh the page
+3. Sessions appear within 1 minute
+4. Verify the correct instance is selected
+
+### "Session not found" errors
+
+**Cause**: Session expired or invalid session ID.
+
+**Solutions**:
+1. Sessions expire after ~3 minutes
+2. Check if provider is sending correct session ID
+3. Review webhook logs for details
+
+---
+
+## API & Webhook Issues
+
+### API calls failing in Action nodes
+
+**Symptoms**: Action node shows error, flow stops.
+
+**Debugging steps**:
+1. Open the session in X-Ray view
+2. Check the API request/response details
+3. Verify the API URL is correct
+4. Check API credentials
+
+**Common causes**:
+- Incorrect URL
+- Authentication failure
+- API timeout (>30 seconds)
+- Invalid response format
+
+### Webhooks not receiving traffic
+
+**Symptoms**: No sessions appear, provider shows errors.
+
+**Debugging steps**:
+1. Check callback URL is correct
+2. Verify instance is active (not paused)
+3. Check provider dashboard for error logs
+4. Try the health endpoint:
+   ```
+   curl https://api.starhash.dev/health
+   ```
+
+### "Unauthorized" webhook errors
+
+**Cause**: Invalid or missing API credentials.
+
+**Solution**:
+1. Go to **Settings** → **Providers**
+2. Re-enter your API credentials
+3. Save and redeploy
+
+---
+
+## Companion App Issues
+
+### Can't sign in to Companion app
+
+**Solutions**:
+1. Use the same account as Studio
+2. Check internet connection
+3. Update the app to latest version
+4. Try signing out and back in
+
+### Flows not appearing in app
+
+**Solutions**:
+1. Pull down to refresh
+2. Check you're on the correct workspace
+3. Flows sync every 30 seconds
+4. Try force-closing and reopening the app
+
+### App crashes during testing
+
+**Solutions**:
+1. Update to the latest version
+2. Clear app cache
+3. Restart your device
+4. Contact support if persistent
+
+---
+
+## Performance Issues
+
+### Flows running slowly
+
+**Causes**:
+- Slow external API calls
+- Complex flow logic
+- High traffic volume
+
+**Solutions**:
+1. Optimize API endpoints
+2. Add caching for repeated data
+3. Simplify flow paths
+4. Contact support for scaling options
+
+### Dashboard loading slowly
+
+**Solutions**:
+1. Check internet connection
+2. Clear browser cache
+3. Try incognito/private mode
+4. Use Chrome for best performance
+
+---
+
+## Account Issues
+
+### Can't reset password
+
+**Solutions**:
+1. Check spam folder for reset email
+2. Ensure correct email address
+3. Wait 5 minutes and try again
+4. Contact support@starhash.dev
+
+### Team member can't access flows
+
+**Cause**: Incorrect permissions.
+
+**Solution**:
+1. Go to **Settings** → **Team**
+2. Check their role (Viewer, Editor, Admin)
+3. Ensure they're on the correct workspace
+
+---
+
+## Getting More Help
+
+If you can't resolve your issue:
+
+### Collect Information
+
+Before contacting support, gather:
+- Error messages (screenshots help)
+- Flow ID or Instance ID
+- Browser and version
+- Steps to reproduce the issue
+
+### Contact Support
+
+<Cards>
+  <Card title="Email Support" icon="mail" href="mailto:support@starhash.dev">
+    support@starhash.dev
+  </Card>
+  <Card title="FAQ" icon="help-circle" href="/resources/faq">
+    Check common questions
+  </Card>
+</Cards>
+
+### Response Times
+
+| Plan | Response Time |
+|------|---------------|
+| Free | 48 hours |
+| Pro | 24 hours |
+| Enterprise | 4 hours |

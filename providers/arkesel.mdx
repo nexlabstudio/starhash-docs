@@ -1,0 +1,205 @@
+---
+title: Arkesel
+description: Connect StarHash to Arkesel for USSD services in Ghana.
+---
+
+# Arkesel
+
+[Arkesel](https://arkesel.com) provides SMS and USSD services in Ghana with a developer-friendly API.
+
+## Supported Countries
+
+| Country | Networks |
+|---------|----------|
+| Ghana | MTN, Vodafone, AirtelTigo |
+
+## Prerequisites
+
+1. An Arkesel account
+2. A USSD shortcode
+3. API key from your dashboard
+
+## Setup Steps
+
+### Step 1: Get Your API Key
+
+1. Log in to [Arkesel Dashboard](https://sms.arkesel.com)
+2. Go to **HTTP API** → **API Keys**
+3. Copy your API key
+
+### Step 2: Configure in StarHash
+
+1. In StarHash Studio, go to **Settings** → **Providers**
+2. Click **Add Provider**
+3. Select **Arkesel**
+4. Enter your credentials:
+
+| Field | Value |
+|-------|-------|
+| API Key | Your Arkesel API key |
+| Shortcode | Your USSD shortcode |
+
+5. Click **Save**
+
+### Step 3: Set Up Callback URL
+
+1. In Arkesel Dashboard, go to **USSD** → **Manage Callbacks**
+2. Enter your StarHash callback URL:
+
+```
+https://api.starhash.dev/hooks/arkesel/{instance_id}
+```
+
+3. Save your configuration
+
+### Step 4: Deploy Your Flow
+
+1. In StarHash Studio, open your flow
+2. Click **Deploy**
+3. Select the Arkesel instance
+4. Click **Publish**
+
+## Request/Response Format
+
+### Incoming Request
+
+Arkesel sends JSON payloads:
+
+```json
+POST /hooks/arkesel/{instance_id}
+Content-Type: application/json
+
+{
+  "sessionID": "ark_abc123",
+  "userID": "233201234567",
+  "newSession": true,
+  "msisdn": "233201234567",
+  "userData": "",
+  "network": "MTN"
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `sessionID` | Unique session identifier |
+| `userID` | User's phone number |
+| `newSession` | True if session just started |
+| `msisdn` | Phone number (same as userID) |
+| `userData` | User input |
+| `network` | Network operator |
+
+### Response Format
+
+StarHash responds with:
+
+```json
+{
+  "sessionID": "ark_abc123",
+  "msisdn": "233201234567",
+  "message": "Welcome!\n1. Check Balance\n2. Send Money",
+  "continueSession": true
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `sessionID` | Echo the session ID |
+| `msisdn` | Echo the phone number |
+| `message` | Text to display |
+| `continueSession` | True to continue, false to end |
+
+## Session Behavior
+
+### New Session Detection
+
+Arkesel indicates new sessions with `newSession: true`:
+
+```json
+// First request
+{
+  "newSession": true,
+  "userData": ""
+}
+
+// Subsequent requests
+{
+  "newSession": false,
+  "userData": "1"
+}
+```
+
+### Session Timeout
+
+- Sessions timeout after **2.5 minutes**
+- StarHash receives no notification on timeout
+- Sessions are marked as `timeout` automatically
+
+## Error Handling
+
+### Common Errors
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `Invalid API Key` | Wrong key | Check API key in settings |
+| `Shortcode not found` | Wrong shortcode | Verify shortcode |
+| `Response timeout` | Slow response | Optimize flow speed |
+
+### Fallback Message
+
+Configure a fallback for errors:
+
+1. Go to **Instance Settings** → **Error Handling**
+2. Set a custom error message
+3. This displays when StarHash errors occur
+
+## SMS Integration
+
+Arkesel supports SMS from USSD flows:
+
+### Send SMS from Flow
+
+Use an Action node:
+
+```json
+{
+  "actionType": "sms",
+  "config": {
+    "to": "${phone}",
+    "message": "Your confirmation code: ${code}",
+    "provider": "arkesel"
+  }
+}
+```
+
+### SMS Pricing
+
+SMS charges are separate from USSD:
+
+- Local SMS: ~GHS 0.02
+- Check Arkesel dashboard for current rates
+
+## Best Practices
+
+1. **Handle newSession** - Check this flag for session start
+2. **Echo IDs** - Always return sessionID and msisdn
+3. **Fast responses** - Stay under 25 seconds
+4. **Use SMS** - Send confirmations via SMS
+
+## Pricing
+
+Arkesel USSD pricing:
+
+- Per-session charges
+- Network-specific rates may apply
+- Contact Arkesel for volume pricing
+
+## Next Steps
+
+<Cards>
+  <Card title="Deployment" icon="rocket" href="/studio/deployment">
+    Deploy your flow
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/engine/webhooks">
+    Advanced webhook configuration
+  </Card>
+</Cards>

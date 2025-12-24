@@ -1,0 +1,87 @@
+---
+title: USSD Providers
+description: Connect StarHash to your USSD provider to receive live traffic.
+---
+
+# USSD Providers
+
+StarHash works with major USSD providers across Africa. Connect your shortcode to start receiving live traffic.
+
+## Supported Providers
+
+| Provider | Countries | Status |
+|----------|-----------|--------|
+| [Africa's Talking](/providers/africas-talking) | Kenya, Nigeria, Uganda, Tanzania | Supported |
+| [Hubtel](/providers/hubtel) | Ghana | Supported |
+| [Arkesel](/providers/arkesel) | Ghana | Supported |
+| [Nalo](/providers/nalo) | Ghana, Nigeria | Supported |
+
+## How It Works
+
+1. **Get a shortcode** from your chosen provider
+2. **Configure credentials** in StarHash
+3. **Set the callback URL** in your provider's dashboard
+4. **Deploy your flow** to start receiving traffic
+
+```
+User dials *123# → Provider → StarHash → Your Flow → Response → User
+```
+
+## Choosing a Provider
+
+Consider these factors when choosing a provider:
+
+| Factor | Description |
+|--------|-------------|
+| **Coverage** | Which countries/networks do you need? |
+| **Pricing** | Per-session costs vary by provider |
+| **Shortcode type** | Shared vs dedicated shortcodes |
+| **API reliability** | Uptime and latency |
+| **Support** | Quality of technical support |
+
+## Shortcode Types
+
+### Shared Shortcode
+
+- Lower cost
+- Format: `*123*45#` (with suffix)
+- Shared with other services
+- Good for testing and small-scale
+
+### Dedicated Shortcode
+
+- Higher cost
+- Format: `*123#` (no suffix)
+- Exclusive to your service
+- Required for serious applications
+
+## Provider Comparison
+
+| Feature | Africa's Talking | Hubtel | Arkesel | Nalo |
+|---------|-----------------|--------|---------|------|
+| Sandbox | Yes | Yes | Yes | Yes |
+| Webhooks | Yes | Yes | Yes | Yes |
+| SMS fallback | Yes | Yes | Yes | Yes |
+| Analytics | Basic | Advanced | Basic | Basic |
+| Pricing | Per-session | Per-session | Per-session | Per-session |
+
+## Getting Started
+
+<Cards>
+  <Card title="Africa's Talking" icon="globe" href="/providers/africas-talking">
+    Kenya, Nigeria, Uganda, Tanzania
+  </Card>
+  <Card title="Hubtel" icon="globe" href="/providers/hubtel">
+    Ghana
+  </Card>
+  <Card title="Arkesel" icon="globe" href="/providers/arkesel">
+    Ghana
+  </Card>
+  <Card title="Nalo" icon="globe" href="/providers/nalo">
+    Ghana, Nigeria
+  </Card>
+</Cards>
+
+## Need a Different Provider?
+
+If your provider isn't listed, [contact us](mailto:support@starhash.dev). We can add support for additional providers based on demand.

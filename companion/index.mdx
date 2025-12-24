@@ -1,0 +1,168 @@
+---
+title: Companion App
+description: Test your USSD flows on real mobile devices with the StarHash Companion app.
+---
+
+# Companion App
+
+The StarHash Companion app lets you test USSD flows on real mobile devices before deploying to production.
+
+## Why Use the Companion App?
+
+The web simulator is great for development, but testing on a real device gives you:
+
+- **Authentic experience** - See exactly what your users will see
+- **Device testing** - Test across different phone models
+- **Offline behavior** - Verify how flows handle network issues
+- **Touch interaction** - Experience the real keypad input flow
+
+## Download
+
+<Cards>
+  <Card title="Android" icon="android" href="https://play.google.com/store/apps/details?id=dev.starhash.companion">
+    Download from Google Play Store
+  </Card>
+  <Card title="iOS" icon="apple" href="https://apps.apple.com/app/starhash-companion/id123456789">
+    Download from App Store
+  </Card>
+</Cards>
+
+## Getting Started
+
+### Step 1: Install the App
+
+Download the Companion app from your device's app store.
+
+### Step 2: Sign In
+
+1. Open the app
+2. Tap **Sign In**
+3. Use the same account you use for StarHash Studio
+
+### Step 3: Connect to Your Workspace
+
+After signing in, you'll see your flows:
+
+- All flows from your workspace are available
+- Flows are synced automatically
+- Pull down to refresh
+
+### Step 4: Test a Flow
+
+1. Tap on a flow to open it
+2. Tap **Start Test**
+3. Interact with the flow using the keypad
+4. View the responses on screen
+
+## App Interface
+
+### Home Screen
+
+Shows all your flows with status indicators:
+
+| Icon | Meaning |
+|------|---------|
+| Green | Flow is active and deployed |
+| Yellow | Flow has unpublished changes |
+| Gray | Flow is a draft |
+
+### Test Screen
+
+The test interface mimics a real USSD session:
+
+```
+┌─────────────────────────┐
+│ *123#                   │
+├─────────────────────────┤
+│                         │
+│ Welcome to StarHash     │
+│ 1. Check Balance        │
+│ 2. Send Money           │
+│ 3. Buy Airtime          │
+│                         │
+├─────────────────────────┤
+│ [1] [2] [3]             │
+│ [4] [5] [6]             │
+│ [7] [8] [9]             │
+│ [*] [0] [#]             │
+│                         │
+│ [    Send    ]          │
+└─────────────────────────┘
+```
+
+### Session History
+
+View past test sessions:
+
+1. Tap the **History** tab
+2. See all previous sessions
+3. Tap to view session details
+
+## Features
+
+### Quick Test
+
+Test flows without leaving Studio:
+
+1. In Studio, click **Test on Device**
+2. Scan the QR code with the Companion app
+3. The flow opens and starts immediately
+
+### Share Test Links
+
+Share a test link with others:
+
+1. Open a flow in the app
+2. Tap **Share**
+3. Send the link to testers
+
+Recipients must have the app installed and access to the flow.
+
+### Offline Mode
+
+The app caches flows for offline testing:
+
+- Last 5 flows are stored locally
+- Test without internet connection
+- Sessions sync when back online
+
+### Notifications
+
+Get notified about flow changes:
+
+- Flow updated
+- New flow shared with you
+- Deployment status changes
+
+Configure in **Settings** → **Notifications**.
+
+## Troubleshooting
+
+### Can't see my flows
+
+1. Make sure you're signed in with the correct account
+2. Pull down to refresh
+3. Check your internet connection
+
+### Flows not syncing
+
+1. Check your internet connection
+2. Sign out and sign back in
+3. Reinstall the app if issues persist
+
+### App crashes
+
+1. Make sure you have the latest version
+2. Clear app cache in device settings
+3. Contact support if issues continue
+
+## Next Steps
+
+<Cards>
+  <Card title="Testing on Device" icon="phone" href="/companion/testing">
+    Detailed testing guide
+  </Card>
+  <Card title="Studio Testing" icon="play" href="/studio/testing">
+    Test in the web simulator
+  </Card>
+</Cards>

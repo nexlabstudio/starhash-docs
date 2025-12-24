@@ -1,0 +1,111 @@
+---
+title: Studio Overview
+description: Learn how to use StarHash Studio, the visual USSD flow builder.
+---
+
+# Studio Overview
+
+StarHash Studio is the web-based visual editor for building USSD applications.
+
+<Image src="https://raw.githubusercontent.com/nexlabstudio/starhash/main/assets/studio-screenshot.png" alt="StarHash Studio Interface" zoom />
+
+## Interface
+
+The Studio interface consists of four main areas:
+
+### 1. Toolbar
+
+Located at the top, the toolbar provides quick access to:
+
+- **Save** - Save your flow
+- **Undo/Redo** - Revert or restore changes
+- **Test** - Open the simulator
+- **Deploy** - Publish to production
+- **Settings** - Flow configuration
+
+### 2. Node Palette
+
+On the left side, you'll find all available node types:
+
+- Menu nodes
+- Input nodes
+- Display nodes
+- Branch nodes
+- Action nodes
+- End nodes
+
+Drag nodes from the palette onto the canvas.
+
+### 3. Canvas
+
+The main working area where you design your flow. Here you can:
+
+- Drag and drop nodes
+- Connect nodes with arrows
+- Select and configure nodes
+- Pan and zoom the view
+
+### 4. Properties Panel
+
+On the right side, configure the selected node:
+
+- Node name and ID
+- Content and messages
+- Variables and expressions
+- Connections to other nodes
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Cmd/Ctrl + S` | Save flow |
+| `Cmd/Ctrl + Z` | Undo |
+| `Cmd/Ctrl + Shift + Z` | Redo |
+| `Delete` | Delete selected node |
+| `Cmd/Ctrl + D` | Duplicate node |
+| `Space + Drag` | Pan canvas |
+| `Scroll` | Zoom in/out |
+
+## Working with Nodes
+
+### Adding Nodes
+
+1. **Drag and drop** from the node palette
+2. **Right-click** on the canvas → Add Node
+3. **Double-click** on the canvas
+
+### Connecting Nodes
+
+1. Hover over a node's output port (right side)
+2. Click and drag to the target node's input port
+3. Release to create the connection
+
+### Configuring Nodes
+
+1. Click on a node to select it
+2. Edit properties in the right panel
+3. Changes are auto-saved
+
+## Flow Validation
+
+Studio validates your flow in real-time:
+
+| Issue | Description |
+|-------|-------------|
+| Missing start node | No node is marked as the start |
+| Orphan nodes | Nodes not connected to the flow |
+| Missing connections | Required outputs not connected |
+| Invalid expressions | Syntax errors in variables |
+
+Fix validation errors before deploying.
+
+## Next Steps
+
+<Cards>
+  <Card title="Flow Builder" icon="pencil" href="/studio/flow-builder">
+    Deep dive into building flows
+  </Card>
+  <Card title="Node Types" icon="shapes" href="/studio/nodes">
+    Learn about all node types
+  </Card>
+</Cards>

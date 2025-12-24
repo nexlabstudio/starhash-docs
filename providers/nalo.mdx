@@ -1,0 +1,244 @@
+---
+title: Nalo Solutions
+description: Connect StarHash to Nalo Solutions for USSD services in Ghana and Nigeria.
+---
+
+# Nalo Solutions
+
+[Nalo Solutions](https://nalosolutions.com) provides USSD and SMS services across Ghana and Nigeria.
+
+## Supported Countries
+
+| Country | Networks |
+|---------|----------|
+| Ghana | MTN, Vodafone, AirtelTigo |
+| Nigeria | MTN, Airtel, Glo, 9mobile |
+
+## Prerequisites
+
+1. A Nalo Solutions account
+2. A USSD shortcode
+3. API key from your dashboard
+
+## Setup Steps
+
+### Step 1: Get Your API Key
+
+1. Log in to [Nalo Dashboard](https://dashboard.nalosolutions.com)
+2. Go to **API Settings**
+3. Copy your API key
+
+### Step 2: Configure in StarHash
+
+1. In StarHash Studio, go to **Settings** → **Providers**
+2. Click **Add Provider**
+3. Select **Nalo**
+4. Enter your credentials:
+
+| Field | Value |
+|-------|-------|
+| API Key | Your Nalo API key |
+| Shortcode | Your USSD shortcode |
+| Country | Ghana or Nigeria |
+
+5. Click **Save**
+
+### Step 3: Set Up Callback URL
+
+1. In Nalo Dashboard, go to **USSD** → **Shortcodes**
+2. Select your shortcode
+3. Set the callback URL:
+
+```
+https://api.starhash.dev/hooks/nalo/{instance_id}
+```
+
+4. Save your configuration
+
+### Step 4: Deploy Your Flow
+
+1. In StarHash Studio, open your flow
+2. Click **Deploy**
+3. Select the Nalo instance
+4. Click **Publish**
+
+## Request/Response Format
+
+### Incoming Request
+
+Nalo sends URL-encoded form data:
+
+```
+POST /hooks/nalo/{instance_id}
+Content-Type: application/x-www-form-urlencoded
+
+USERID=233201234567
+&MSISDN=233201234567
+&USERDATA=1
+&MSGTYPE=1
+&SESSIONID=nalo_abc123
+&NETWORK=MTN
+```
+
+| Field | Description |
+|-------|-------------|
+| `SESSIONID` | Unique session identifier |
+| `MSISDN` | User's phone number |
+| `USERDATA` | User input |
+| `MSGTYPE` | 1 (continue) or 2 (end) |
+| `NETWORK` | Network operator |
+| `USERID` | Same as MSISDN |
+
+### Message Types
+
+| MSGTYPE | Description |
+|---------|-------------|
+| `1` | Continue session |
+| `2` | End session |
+
+### Response Format
+
+StarHash responds with URL-encoded data:
+
+```
+MSGTYPE=1&MSG=Welcome to StarHash%0A1. Check Balance%0A2. Send Money
+```
+
+| Field | Description |
+|-------|-------------|
+| `MSGTYPE` | 1 to continue, 2 to end |
+| `MSG` | URL-encoded message text |
+
+## Session Behavior
+
+### Session Start
+
+When a user dials your shortcode:
+
+```
+MSGTYPE=1
+USERDATA=   (empty for initial dial)
+SESSIONID=nalo_abc123
+```
+
+### Session Input
+
+When user responds:
+
+```
+MSGTYPE=1
+USERDATA=1
+SESSIONID=nalo_abc123
+```
+
+### Session End
+
+When session ends:
+
+```
+MSGTYPE=2
+USERDATA=
+SESSIONID=nalo_abc123
+```
+
+### Session Timeout
+
+- Sessions timeout after **3 minutes**
+- Nalo sends `MSGTYPE=2` on timeout
+- Design flows for this duration
+
+## Error Handling
+
+### Common Errors
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `Invalid API Key` | Wrong key | Verify in settings |
+| `Invalid Shortcode` | Wrong code | Check shortcode config |
+| `Session expired` | Timeout occurred | Sessions last 3 minutes |
+
+### Error Response
+
+Return an error message:
+
+```
+MSGTYPE=2&MSG=Sorry, an error occurred. Please try again.
+```
+
+## Multi-Country Support
+
+Nalo serves both Ghana and Nigeria with different configurations:
+
+### Ghana Setup
+
+```
+Shortcode format: *713*XX#
+MSISDN format: 233XXXXXXXXX
+```
+
+### Nigeria Setup
+
+```
+Shortcode format: *384*XX#
+MSISDN format: 234XXXXXXXXXX
+```
+
+### Country Detection
+
+StarHash automatically detects the country from the phone number:
+
+```dart
+BranchNode(
+  conditions: [
+    Condition(
+      expression: '$phone.startsWith("234")',
+      nextNodeId: 'nigeria-flow',
+    ),
+  ],
+  defaultNodeId: 'ghana-flow',
+)
+```
+
+## SMS Integration
+
+Send SMS from your USSD flows:
+
+```json
+{
+  "actionType": "sms",
+  "config": {
+    "to": "${phone}",
+    "message": "Transaction confirmed. Ref: ${txnId}",
+    "provider": "nalo"
+  }
+}
+```
+
+## Best Practices
+
+1. **URL encode responses** - Special characters must be encoded
+2. **Handle MSGTYPE=2** - Gracefully handle session ends
+3. **Multi-country** - Design flows that work in both countries
+4. **Keep it short** - 3-minute timeout limit
+
+## Pricing
+
+Nalo pricing varies by country:
+
+| Country | Approx. Cost |
+|---------|-------------|
+| Ghana | ~GHS 0.03/session |
+| Nigeria | ~NGN 4.00/session |
+
+Contact Nalo for exact pricing and volume discounts.
+
+## Next Steps
+
+<Cards>
+  <Card title="Deployment" icon="rocket" href="/studio/deployment">
+    Deploy your flow
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/engine/webhooks">
+    Advanced webhook configuration
+  </Card>
+</Cards>

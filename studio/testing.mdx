@@ -1,0 +1,213 @@
+---
+title: Testing
+description: Test and debug your USSD flows with the built-in simulator.
+---
+
+# Testing
+
+StarHash provides powerful tools to test your flows before deployment.
+
+## Simulator
+
+The built-in simulator lets you test flows without a real phone or shortcode.
+
+### Opening the Simulator
+
+1. Click **Test** in the toolbar
+2. Or press `Cmd/Ctrl + T`
+
+The simulator panel opens on the right side of the screen.
+
+### Running a Test
+
+1. Click **Start Session**
+2. Interact with your flow by entering responses
+3. Watch the flow execute in real-time
+
+### Simulator Features
+
+| Feature | Description |
+|---------|-------------|
+| Step-by-step | See each node as it executes |
+| Variable inspector | View all session variables |
+| Response input | Enter user responses |
+| Session history | Review past test sessions |
+
+## Testing Modes
+
+### Interactive Mode
+
+Default mode - you provide responses manually:
+
+```
+┌─────────────────────────────────┐
+│ Welcome! Select an option:      │
+│ 1. Check Balance                │
+│ 2. Send Money                   │
+│                                 │
+│ Enter response: [1]             │
+└─────────────────────────────────┘
+```
+
+### Automated Mode
+
+Pre-define a sequence of inputs:
+
+```json
+{
+  "inputs": ["1", "0201234567", "100", "1234", "1"]
+}
+```
+
+Click **Run Automated** to execute all inputs.
+
+### Stress Testing
+
+Test with multiple concurrent sessions:
+
+1. Click **Stress Test**
+2. Set number of sessions (e.g., 100)
+3. Define input patterns
+4. Click **Run**
+
+View results including:
+- Success rate
+- Average response time
+- Error breakdown
+
+## Variable Inspector
+
+Monitor variables during testing:
+
+```
+┌─ Variables ─────────────────────┐
+│ $phone:    +233201234567        │
+│ $session:  sess_abc123          │
+│ name:      John                 │
+│ amount:    100                  │
+│ balance:   450.50               │
+└─────────────────────────────────┘
+```
+
+### Modifying Variables
+
+During testing, you can override variables:
+
+1. Click on a variable
+2. Enter a new value
+3. Continue the test
+
+Useful for testing edge cases.
+
+## Mock Responses
+
+For Action nodes that call external APIs, use mock responses:
+
+### Setting Up Mocks
+
+1. Click on an Action node
+2. Go to **Test** tab
+3. Enable **Use Mock Response**
+4. Enter mock data:
+
+```json
+{
+  "balance": 500,
+  "status": "active",
+  "name": "John Doe"
+}
+```
+
+### Mock Scenarios
+
+Create multiple scenarios:
+
+| Scenario | Mock Data |
+|----------|-----------|
+| Success | `{"status": "success", "txnId": "TXN123"}` |
+| Insufficient Funds | `{"status": "error", "code": "INSUFFICIENT_FUNDS"}` |
+| Timeout | `{"error": "timeout"}` |
+
+Switch between scenarios during testing.
+
+## X-Ray Debugger
+
+Deep dive into session execution:
+
+### Opening X-Ray
+
+1. Click **X-Ray** in the simulator
+2. Or click on a session in history
+
+### X-Ray View
+
+```
+Timeline:
+─────────────────────────────────────
+10:30:01.123 │ Session started
+10:30:01.125 │ → Node: main-menu
+10:30:01.126 │ ← Response sent (45ms)
+10:30:05.432 │ User input: "1"
+10:30:05.433 │ → Node: check-balance
+10:30:05.435 │ → Action: HTTP GET /api/balance
+10:30:05.892 │ ← HTTP 200 (457ms)
+10:30:05.893 │ Variable set: balance = 450.50
+10:30:05.894 │ → Node: show-balance
+```
+
+### What X-Ray Shows
+
+- Exact timing for each step
+- Node transitions
+- Variable changes
+- API requests/responses
+- Errors and exceptions
+
+## Common Issues
+
+### Flow Not Starting
+
+**Cause**: No start node defined
+
+**Fix**: Right-click a node → Set as Start Node
+
+### Infinite Loop
+
+**Cause**: Nodes connect in a circle with no exit
+
+**Fix**: Add an End node or break condition
+
+### Variable Undefined
+
+**Cause**: Using variable before it's set
+
+**Fix**: Check flow path, add default values
+
+### Validation Failing
+
+**Cause**: Input doesn't match validation rules
+
+**Fix**: Review validation config, test edge cases
+
+## Test Checklist
+
+Before deploying, verify:
+
+- [ ] All paths lead to an End node
+- [ ] Error paths are handled
+- [ ] Variables have default values
+- [ ] API failures are handled gracefully
+- [ ] Character limits are respected (182 chars)
+- [ ] Back/Cancel options work correctly
+- [ ] Session timeout behavior is acceptable
+
+## Next Steps
+
+<Cards>
+  <Card title="Deployment" icon="rocket" href="/studio/deployment">
+    Deploy your tested flow to production
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/resources/troubleshooting">
+    Fix common issues
+  </Card>
+</Cards>

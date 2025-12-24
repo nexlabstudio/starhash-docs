@@ -1,0 +1,126 @@
+---
+title: Quickstart
+description: Build and test your first USSD flow in under 5 minutes.
+---
+
+# Quickstart
+
+Build your first USSD flow in under 5 minutes.
+
+## Step 1: Create an Account
+
+1. Go to [StarHash Studio](https://studio.starhash.dev)
+2. Sign up with Google, GitHub, or email
+3. You'll be taken to your dashboard
+
+## Step 2: Create a New Flow
+
+1. Click **New Flow** in the dashboard
+2. Enter a name: "My First Flow"
+3. Click **Create**
+
+You'll see the visual flow builder with a blank canvas.
+
+## Step 3: Add a Menu Node
+
+1. Click **Add Node** in the toolbar
+2. Select **Menu** from the node types
+3. Configure the menu:
+
+```
+Title: Welcome to My App
+Option 1: Check Balance → (leave empty for now)
+Option 2: Buy Airtime → (leave empty for now)
+Option 3: Exit → (leave empty for now)
+```
+
+4. Click **Save**
+
+## Step 4: Add Response Nodes
+
+Add nodes for each menu option:
+
+### Balance Node
+1. Click **Add Node** → **Display**
+2. Set message: `Your balance is $50.00`
+3. Connect Menu Option 1 to this node
+
+### Airtime Node
+1. Click **Add Node** → **Input**
+2. Set prompt: `Enter phone number:`
+3. Set variable: `phone_number`
+4. Connect Menu Option 2 to this node
+
+### Exit Node
+1. Click **Add Node** → **End**
+2. Set message: `Thank you for using our service. Goodbye!`
+3. Connect Menu Option 3 to this node
+
+## Step 5: Set the Start Node
+
+1. Click on the Menu node
+2. Click **Set as Start** in the node options
+3. The node will show a green indicator
+
+Your flow should look like this:
+
+```
+        ┌─────────────┐
+        │ Menu        │ ← Start
+        │ Welcome...  │
+        └──────┬──────┘
+               │
+    ┌──────────┼──────────┐
+    ▼          ▼          ▼
+┌───────┐  ┌───────┐  ┌───────┐
+│Balance│  │Airtime│  │ Exit  │
+│$50.00 │  │Input  │  │Goodbye│
+└───────┘  └───────┘  └───────┘
+```
+
+## Step 6: Test Your Flow
+
+1. Click **Test** in the toolbar
+2. The simulator panel opens on the right
+3. You'll see the welcome menu
+4. Select an option to navigate through your flow
+
+<Video src="https://raw.githubusercontent.com/nexlabstudio/starhash/main/assets/quickstart-demo.mp4" />
+
+## Step 7: Deploy (Optional)
+
+When you're ready to go live:
+
+1. Click **Deploy** in the toolbar
+2. Select your provider (Africa's Talking, Hubtel, etc.)
+3. Enter your shortcode details
+4. Click **Publish**
+
+<Warning>
+  You need a USSD shortcode from a supported provider to deploy. See [Providers](/providers) for setup instructions.
+</Warning>
+
+## What's Next?
+
+<Cards>
+  <Card title="Core Concepts" icon="book" href="/getting-started/concepts">
+    Understand flows, nodes, and sessions in depth.
+  </Card>
+  <Card title="Node Types" icon="shapes" href="/studio/nodes">
+    Explore all available node types.
+  </Card>
+  <Card title="Variables" icon="code" href="/studio/variables">
+    Learn how to use dynamic content in your flows.
+  </Card>
+</Cards>
+
+## Example Flows
+
+Check out these templates to get inspired:
+
+| Template | Description |
+|----------|-------------|
+| Balance Checker | Query account balance from an API |
+| Airtime Purchase | Buy airtime with mobile money |
+| Survey | Collect user feedback |
+| Registration | Multi-step user registration |

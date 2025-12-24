@@ -1,0 +1,293 @@
+---
+title: Node Types
+description: Complete reference for all node types in StarHash.
+---
+
+# Node Types
+
+StarHash provides six node types to build any USSD flow.
+
+## Menu Node
+
+Displays a list of options for the user to choose from.
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `title` | String | Text displayed above options |
+| `options` | List | Menu options (label + next node) |
+| `footer` | String | Optional text below options |
+
+### Example
+
+```dart
+MenuNode(
+  id: 'main-menu',
+  title: 'Welcome! Select an option:',
+  options: [
+    MenuOption(label: 'Check Balance', nextNodeId: 'balance'),
+    MenuOption(label: 'Send Money', nextNodeId: 'transfer'),
+    MenuOption(label: 'Buy Airtime', nextNodeId: 'airtime'),
+    MenuOption(label: 'Help', nextNodeId: 'help'),
+  ],
+  footer: '0. Back',
+)
+```
+
+### User Sees
+
+```
+Welcome! Select an option:
+1. Check Balance
+2. Send Money
+3. Buy Airtime
+4. Help
+0. Back
+```
+
+### Tips
+
+- Keep options to 5-7 items max for readability
+- Use "0" for back/cancel actions
+- Keep labels short (USSD has 182 char limit)
+
+---
+
+## Input Node
+
+Prompts the user to enter data.
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `prompt` | String | The question or instruction |
+| `variableName` | String | Variable to store the input |
+| `validation` | Object | Optional validation rules |
+| `nextNodeId` | String | Next node after input |
+
+### Example
+
+```dart
+InputNode(
+  id: 'get-amount',
+  prompt: 'Enter amount to transfer:',
+  variableName: 'amount',
+  validation: {
+    'type': 'number',
+    'min': 1,
+    'max': 10000,
+  },
+  nextNodeId: 'confirm-transfer',
+)
+```
+
+### Validation Types
+
+| Type | Options | Description |
+|------|---------|-------------|
+| `text` | `minLength`, `maxLength`, `pattern` | Free text input |
+| `number` | `min`, `max` | Numeric input |
+| `phone` | `countryCode` | Phone number format |
+| `pin` | `length` | PIN code (masked) |
+
+---
+
+## Display Node
+
+Shows a message and continues to the next node.
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `message` | String | Text to display |
+| `nextNodeId` | String | Next node (auto-continue) |
+| `delay` | Number | Optional delay in ms |
+
+### Example
+
+```dart
+DisplayNode(
+  id: 'processing',
+  message: 'Processing your request...',
+  nextNodeId: 'result',
+  delay: 1000,
+)
+```
+
+### Use Cases
+
+- Loading/processing messages
+- Confirmation screens that auto-continue
+- Information displays
+
+---
+
+## Branch Node
+
+Routes to different nodes based on conditions.
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `conditions` | List | Ordered list of conditions |
+| `defaultNodeId` | String | Fallback if no conditions match |
+
+### Example
+
+```dart
+BranchNode(
+  id: 'check-balance',
+  conditions: [
+    Condition(
+      expression: 'balance >= amount',
+      nextNodeId: 'sufficient-funds',
+    ),
+    Condition(
+      expression: 'balance > 0',
+      nextNodeId: 'insufficient-funds',
+    ),
+  ],
+  defaultNodeId: 'zero-balance',
+)
+```
+
+### Expression Syntax
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `==` | Equals | `status == "active"` |
+| `!=` | Not equals | `type != "guest"` |
+| `>` | Greater than | `balance > 100` |
+| `>=` | Greater or equal | `age >= 18` |
+| `<` | Less than | `attempts < 3` |
+| `<=` | Less or equal | `count <= 5` |
+| `&&` | And | `age >= 18 && verified == true` |
+| `\|\|` | Or | `role == "admin" \|\| role == "manager"` |
+
+---
+
+## Action Node
+
+Executes backend logic like API calls.
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `actionType` | String | Type of action |
+| `config` | Object | Action-specific configuration |
+| `resultVariable` | String | Variable to store result |
+| `nextNodeId` | String | Next node on success |
+| `errorNodeId` | String | Next node on failure |
+
+### Action Types
+
+<Tabs>
+  <TabItem label="HTTP Request">
+    Make an API call:
+
+    ```dart
+    ActionNode(
+      id: 'fetch-balance',
+      actionType: 'http',
+      config: {
+        'url': 'https://api.example.com/balance/${phone}',
+        'method': 'GET',
+        'headers': {
+          'Authorization': 'Bearer ${apiKey}',
+        },
+      },
+      resultVariable: 'balanceData',
+      nextNodeId: 'show-balance',
+      errorNodeId: 'api-error',
+    )
+    ```
+  </TabItem>
+
+  <TabItem label="Set Variable">
+    Set or compute a variable:
+
+    ```dart
+    ActionNode(
+      id: 'calc-fee',
+      actionType: 'setVariable',
+      config: {
+        'name': 'fee',
+        'value': 'amount * 0.01',
+      },
+      nextNodeId: 'show-fee',
+    )
+    ```
+  </TabItem>
+
+  <TabItem label="Send SMS">
+    Send an SMS message:
+
+    ```dart
+    ActionNode(
+      id: 'send-confirmation',
+      actionType: 'sms',
+      config: {
+        'to': '${phone}',
+        'message': 'Transfer of ${amount} confirmed. Ref: ${txnId}',
+      },
+      nextNodeId: 'complete',
+    )
+    ```
+  </TabItem>
+</Tabs>
+
+---
+
+## End Node
+
+Terminates the USSD session.
+
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `message` | String | Final message to user |
+
+### Example
+
+```dart
+EndNode(
+  id: 'success',
+  message: 'Transaction complete! Ref: ${txnId}. Thank you for using our service.',
+)
+```
+
+### Tips
+
+- Always provide a clear final message
+- Include transaction references when applicable
+- Keep within the 182 character limit
+
+---
+
+## Node Reference Table
+
+| Node Type | Input | Output | Use Case |
+|-----------|-------|--------|----------|
+| Menu | 1 | N (per option) | User choices |
+| Input | 1 | 1 | Collect data |
+| Display | 1 | 1 | Show info |
+| Branch | 1 | N (per condition) | Logic routing |
+| Action | 1 | 2 (success/error) | Backend logic |
+| End | 1 | 0 | Terminate session |
+
+## Next Steps
+
+<Cards>
+  <Card title="Variables" icon="code" href="/studio/variables">
+    Use dynamic content in nodes
+  </Card>
+  <Card title="Testing" icon="play" href="/studio/testing">
+    Test your flows with the simulator
+  </Card>
+</Cards>

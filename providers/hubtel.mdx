@@ -1,0 +1,224 @@
+---
+title: Hubtel
+description: Connect StarHash to Hubtel for USSD services in Ghana.
+---
+
+# Hubtel
+
+[Hubtel](https://hubtel.com) is a leading payment and communications platform in Ghana offering USSD services.
+
+## Supported Countries
+
+| Country | Networks |
+|---------|----------|
+| Ghana | MTN, Vodafone, AirtelTigo |
+
+## Prerequisites
+
+1. A Hubtel developer account
+2. A USSD shortcode
+3. Client ID and Secret from your dashboard
+
+## Setup Steps
+
+### Step 1: Get Your Credentials
+
+1. Log in to [Hubtel Developer Portal](https://developers.hubtel.com)
+2. Go to **Applications** → Your app
+3. Copy your **Client ID** and **Client Secret**
+
+### Step 2: Configure in StarHash
+
+1. In StarHash Studio, go to **Settings** → **Providers**
+2. Click **Add Provider**
+3. Select **Hubtel**
+4. Enter your credentials:
+
+| Field | Value |
+|-------|-------|
+| Client ID | Your Hubtel client ID |
+| Client Secret | Your client secret |
+| Shortcode | Your USSD shortcode |
+
+5. Click **Save**
+
+### Step 3: Set Up Callback URL
+
+1. In Hubtel Developer Portal, go to **USSD** → **Applications**
+2. Edit your USSD application
+3. Set the callback URL:
+
+```
+https://api.starhash.dev/hooks/hubtel/{instance_id}
+```
+
+4. Save your changes
+
+### Step 4: Deploy Your Flow
+
+1. In StarHash Studio, open your flow
+2. Click **Deploy**
+3. Select the Hubtel instance
+4. Click **Publish**
+
+## Request/Response Format
+
+### Incoming Request
+
+Hubtel sends JSON payloads:
+
+```json
+POST /hooks/hubtel/{instance_id}
+Content-Type: application/json
+
+{
+  "SessionId": "hub_abc123",
+  "Mobile": "233201234567",
+  "Message": "1",
+  "ServiceCode": "*713*5#",
+  "Type": "Initiation",
+  "Operator": "MTN"
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `SessionId` | Unique session identifier |
+| `Mobile` | User's phone number |
+| `Message` | Current user input |
+| `ServiceCode` | Your shortcode |
+| `Type` | Initiation, Response, or Release |
+| `Operator` | Network operator |
+
+### Message Types
+
+| Type | Description |
+|------|-------------|
+| `Initiation` | User dialed the shortcode |
+| `Response` | User sent a response |
+| `Release` | Session ended by user |
+
+### Response Format
+
+StarHash responds with:
+
+```json
+{
+  "Type": "Response",
+  "Message": "Welcome to StarHash\n1. Check Balance\n2. Send Money",
+  "Label": "Main Menu",
+  "ClientState": "state_data"
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `Type` | Response (continue) or Release (end) |
+| `Message` | Text to display |
+| `Label` | Optional label for logging |
+| `ClientState` | Optional state data |
+
+## Session Behavior
+
+### Input Handling
+
+Unlike Africa's Talking, Hubtel sends individual inputs:
+
+```
+User dials: *713*5#
+Type: Initiation
+Message: "" (empty)
+
+User enters: 1
+Type: Response
+Message: "1"
+
+User enters: 2
+Type: Response
+Message: "2"
+```
+
+### Session Timeout
+
+- Sessions timeout after **2 minutes** of inactivity
+- Hubtel sends a `Release` message on timeout
+- Design flows for shorter sessions
+
+## Error Handling
+
+### Common Errors
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401 Unauthorized` | Invalid credentials | Check Client ID/Secret |
+| `404 Not Found` | Invalid callback URL | Verify the URL |
+| `Timeout` | Response took too long | Optimize flow speed |
+
+### Retry Logic
+
+If StarHash fails to respond:
+
+1. Hubtel waits 20 seconds
+2. Retries once
+3. If still failing, ends session with error
+
+## Mobile Money Integration
+
+Hubtel excels at mobile money integration:
+
+### Payment Prompts
+
+Trigger mobile money payments from Action nodes:
+
+```json
+{
+  "actionType": "hubtel_payment",
+  "config": {
+    "amount": "${amount}",
+    "phone": "${phone}",
+    "description": "Payment for service"
+  }
+}
+```
+
+### Payment Status
+
+Check payment status in your flow:
+
+```dart
+BranchNode(
+  conditions: [
+    Condition(
+      expression: 'paymentStatus == "success"',
+      nextNodeId: 'payment-success',
+    ),
+  ],
+  defaultNodeId: 'payment-failed',
+)
+```
+
+## Best Practices
+
+1. **Shorter flows** - Hubtel has 2-minute timeout
+2. **Handle Release** - Gracefully end when user cancels
+3. **Use ClientState** - Persist data between requests
+4. **Integrate payments** - Leverage Hubtel's payment APIs
+
+## Pricing
+
+Contact Hubtel for current pricing:
+
+- Per-session charges apply
+- Additional charges for payment integrations
+- Volume discounts available
+
+## Next Steps
+
+<Cards>
+  <Card title="Deployment" icon="rocket" href="/studio/deployment">
+    Deploy your flow
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/engine/webhooks">
+    Advanced webhook configuration
+  </Card>
+</Cards>

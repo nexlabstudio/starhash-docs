@@ -1,0 +1,285 @@
+---
+title: Variables
+description: Use dynamic content and expressions in your USSD flows.
+---
+
+# Variables
+
+Variables allow you to create dynamic, personalized USSD experiences.
+
+## Basics
+
+Variables store data during a session and can be used in node content.
+
+### Syntax
+
+Use `${variableName}` to reference a variable:
+
+```
+Welcome, ${name}!
+Your balance is ${balance} GHS.
+```
+
+### Creating Variables
+
+Variables are created when:
+
+1. **User input** - Input nodes store responses
+2. **Action results** - API responses saved to variables
+3. **Set variable** - Explicitly set in Action nodes
+
+## Variable Types
+
+### User Input Variables
+
+Created by Input nodes:
+
+```dart
+InputNode(
+  prompt: 'Enter your name:',
+  variableName: 'name',  // Creates ${name}
+)
+```
+
+### System Variables
+
+Available in every session:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `$phone` | User's phone number | `+233201234567` |
+| `$sessionId` | Current session ID | `sess_abc123` |
+| `$timestamp` | Current Unix timestamp | `1703436800` |
+| `$provider` | USSD provider name | `africas_talking` |
+| `$shortcode` | Dialed shortcode | `*123#` |
+
+### Computed Variables
+
+Created by Action nodes with expressions:
+
+```dart
+ActionNode(
+  actionType: 'setVariable',
+  config: {
+    'name': 'total',
+    'value': 'amount + fee',
+  },
+)
+```
+
+## Expressions
+
+Use expressions for dynamic values and conditions.
+
+### Arithmetic
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `+` | Addition | `amount + fee` |
+| `-` | Subtraction | `balance - amount` |
+| `*` | Multiplication | `price * quantity` |
+| `/` | Division | `total / 2` |
+| `%` | Modulo | `index % 2` |
+
+### String Operations
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `concat()` | Join strings | `concat(firstName, " ", lastName)` |
+| `upper()` | Uppercase | `upper(name)` |
+| `lower()` | Lowercase | `lower(email)` |
+| `substr()` | Substring | `substr(phone, 0, 4)` |
+| `length()` | String length | `length(input)` |
+
+### Comparison
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `==` | Equals | `status == "active"` |
+| `!=` | Not equals | `type != "guest"` |
+| `>` | Greater than | `balance > 100` |
+| `>=` | Greater or equal | `age >= 18` |
+| `<` | Less than | `attempts < 3` |
+| `<=` | Less or equal | `count <= 5` |
+
+### Logical
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `&&` | And | `age >= 18 && verified` |
+| `\|\|` | Or | `admin \|\| manager` |
+| `!` | Not | `!expired` |
+
+## Using Variables in Nodes
+
+### Menu Node
+
+```dart
+MenuNode(
+  title: 'Welcome ${name}! Balance: ${balance} GHS',
+  options: [...],
+)
+```
+
+### Display Node
+
+```dart
+DisplayNode(
+  message: '''
+Transfer Summary:
+Amount: ${amount} GHS
+Fee: ${fee} GHS
+Total: ${total} GHS
+To: ${recipientName}
+''',
+)
+```
+
+### Branch Node
+
+```dart
+BranchNode(
+  conditions: [
+    Condition(
+      expression: 'balance >= total',
+      nextNodeId: 'proceed',
+    ),
+  ],
+  defaultNodeId: 'insufficient',
+)
+```
+
+### Action Node (HTTP)
+
+```dart
+ActionNode(
+  actionType: 'http',
+  config: {
+    'url': 'https://api.example.com/users/${phone}',
+    'method': 'POST',
+    'body': {
+      'amount': '${amount}',
+      'recipient': '${recipient}',
+    },
+  },
+)
+```
+
+## Working with API Responses
+
+When an Action node makes an HTTP request, the response is stored in a variable.
+
+### Accessing Response Data
+
+If the API returns:
+
+```json
+{
+  "user": {
+    "name": "John",
+    "balance": 500
+  },
+  "status": "success"
+}
+```
+
+Access nested properties with dot notation:
+
+```
+${response.user.name}      → "John"
+${response.user.balance}   → 500
+${response.status}         → "success"
+```
+
+### Array Access
+
+For arrays, use index notation:
+
+```
+${transactions[0].amount}  → First transaction amount
+${items[2].name}          → Third item name
+```
+
+## Default Values
+
+Provide fallback values for undefined variables:
+
+```
+${name|Guest}              → Uses "Guest" if name is undefined
+${balance|0}               → Uses 0 if balance is undefined
+```
+
+## Formatting
+
+### Numbers
+
+```
+${amount|number:2}         → "1,234.56" (2 decimal places)
+${balance|currency:GHS}    → "GHS 500.00"
+```
+
+### Dates
+
+```
+${timestamp|date:short}    → "12/25/23"
+${timestamp|date:long}     → "December 25, 2023"
+${timestamp|time}          → "14:30"
+```
+
+### Phone Numbers
+
+```
+${phone|phone:local}       → "020 123 4567"
+${phone|phone:intl}        → "+233 20 123 4567"
+```
+
+## Best Practices
+
+### Naming Conventions
+
+```
+Good: userName, accountBalance, transferAmount
+Bad: x, temp, data1
+```
+
+### Validation
+
+Always validate user input:
+
+```dart
+InputNode(
+  variableName: 'amount',
+  validation: {
+    'type': 'number',
+    'min': 1,
+    'max': 10000,
+  },
+)
+```
+
+### Error Handling
+
+Check for undefined variables:
+
+```dart
+BranchNode(
+  conditions: [
+    Condition(
+      expression: 'balance != undefined',
+      nextNodeId: 'show-balance',
+    ),
+  ],
+  defaultNodeId: 'fetch-balance',
+)
+```
+
+## Next Steps
+
+<Cards>
+  <Card title="Testing" icon="play" href="/studio/testing">
+    Test your variables in the simulator
+  </Card>
+  <Card title="Deployment" icon="rocket" href="/studio/deployment">
+    Deploy your flow to production
+  </Card>
+</Cards>

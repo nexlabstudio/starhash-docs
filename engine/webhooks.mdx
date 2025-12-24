@@ -1,0 +1,301 @@
+---
+title: Webhooks
+description: Configure USSD provider callbacks to receive traffic.
+---
+
+# Webhooks
+
+Webhooks receive USSD requests from telecom providers and route them to your flows.
+
+## How It Works
+
+```
+User dials *123# → Provider sends request → StarHash webhook → Flow executes → Response sent
+```
+
+## Webhook URL Format
+
+```
+https://api.starhash.dev/hooks/{provider}/{instance_id}
+```
+
+Examples:
+- `https://api.starhash.dev/hooks/africas_talking/inst_abc123`
+- `https://api.starhash.dev/hooks/hubtel/inst_xyz789`
+
+## Provider Configuration
+
+<Tabs>
+  <TabItem label="Africa's Talking">
+    ### Setup
+
+    1. Log in to [Africa's Talking Dashboard](https://account.africastalking.com)
+    2. Go to **USSD** → **Callback URLs**
+    3. Enter your StarHash webhook URL
+    4. Save
+
+    ### Request Format
+
+    Africa's Talking sends:
+    ```
+    POST /hooks/africas_talking/{instance_id}
+    Content-Type: application/x-www-form-urlencoded
+
+    sessionId=ATUid_xxx&phoneNumber=%2B233201234567&text=1*2&serviceCode=*123#
+    ```
+
+    | Field | Description |
+    |-------|-------------|
+    | `sessionId` | Unique session identifier |
+    | `phoneNumber` | User's phone number |
+    | `text` | User input (concatenated with `*`) |
+    | `serviceCode` | Dialed shortcode |
+
+    ### Response Format
+
+    StarHash responds:
+    ```
+    CON Welcome! Select an option:
+    1. Check Balance
+    2. Send Money
+    ```
+
+    - `CON` prefix: Continue session
+    - `END` prefix: End session
+  </TabItem>
+
+  <TabItem label="Hubtel">
+    ### Setup
+
+    1. Log in to [Hubtel Developer Portal](https://developers.hubtel.com)
+    2. Go to **USSD** → **Applications**
+    3. Create or edit your application
+    4. Set the callback URL to your StarHash webhook
+    5. Save
+
+    ### Request Format
+
+    Hubtel sends:
+    ```json
+    POST /hooks/hubtel/{instance_id}
+    Content-Type: application/json
+
+    {
+      "SessionId": "hub_xxx",
+      "Mobile": "233201234567",
+      "Message": "1",
+      "ServiceCode": "*123#",
+      "Type": "Initiation",
+      "Operator": "MTN"
+    }
+    ```
+
+    | Field | Description |
+    |-------|-------------|
+    | `SessionId` | Unique session identifier |
+    | `Mobile` | User's phone number |
+    | `Message` | User input |
+    | `ServiceCode` | Dialed shortcode |
+    | `Type` | Initiation, Response, Release |
+    | `Operator` | Network operator |
+
+    ### Response Format
+
+    StarHash responds:
+    ```json
+    {
+      "Type": "Response",
+      "Message": "Welcome! Select an option:\n1. Check Balance\n2. Send Money"
+    }
+    ```
+
+    - `Type: Response`: Continue session
+    - `Type: Release`: End session
+  </TabItem>
+
+  <TabItem label="Arkesel">
+    ### Setup
+
+    1. Log in to [Arkesel Dashboard](https://sms.arkesel.com)
+    2. Go to **USSD** → **Manage Callbacks**
+    3. Enter your StarHash webhook URL
+    4. Save
+
+    ### Request Format
+
+    Arkesel sends:
+    ```json
+    POST /hooks/arkesel/{instance_id}
+    Content-Type: application/json
+
+    {
+      "sessionID": "ark_xxx",
+      "userID": "233201234567",
+      "newSession": true,
+      "msisdn": "233201234567",
+      "userData": "1",
+      "network": "MTN"
+    }
+    ```
+
+    ### Response Format
+
+    ```json
+    {
+      "sessionID": "ark_xxx",
+      "msisdn": "233201234567",
+      "message": "Welcome!",
+      "continueSession": true
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Nalo">
+    ### Setup
+
+    1. Log in to [Nalo Dashboard](https://dashboard.nalosolutions.com)
+    2. Go to **USSD** → **Shortcodes**
+    3. Configure your callback URL
+    4. Save
+
+    ### Request Format
+
+    Nalo sends:
+    ```
+    POST /hooks/nalo/{instance_id}
+    Content-Type: application/x-www-form-urlencoded
+
+    USERID=233201234567&MSISDN=233201234567&USERDATA=1&MSGTYPE=1&SESSIONID=nalo_xxx
+    ```
+
+    | Field | Description |
+    |-------|-------------|
+    | `SESSIONID` | Unique session identifier |
+    | `MSISDN` | User's phone number |
+    | `USERDATA` | User input |
+    | `MSGTYPE` | 1 (continue) or 2 (end) |
+
+    ### Response Format
+
+    ```
+    MSGTYPE=1&MSG=Welcome! Select an option:
+    ```
+  </TabItem>
+</Tabs>
+
+## Testing Webhooks
+
+### Using cURL
+
+Test your webhook locally:
+
+```bash
+# Africa's Talking format
+curl -X POST http://localhost:8080/hooks/africas_talking/inst_test \
+  -d "sessionId=test123&phoneNumber=%2B233201234567&text=&serviceCode=*123#"
+
+# Hubtel format
+curl -X POST http://localhost:8080/hooks/hubtel/inst_test \
+  -H "Content-Type: application/json" \
+  -d '{"SessionId":"test123","Mobile":"233201234567","Message":"","Type":"Initiation"}'
+```
+
+### Using ngrok
+
+Expose your local server for provider testing:
+
+```bash
+ngrok http 8080
+```
+
+Use the ngrok URL as your callback:
+```
+https://abc123.ngrok.io/hooks/africas_talking/inst_test
+```
+
+## Webhook Security
+
+### IP Whitelisting
+
+Restrict webhook access to provider IPs:
+
+```json
+{
+  "security": {
+    "allowedIps": [
+      "52.12.34.56",
+      "52.12.34.57"
+    ]
+  }
+}
+```
+
+### Signature Verification
+
+Some providers sign requests. Enable verification:
+
+```json
+{
+  "security": {
+    "verifySignature": true,
+    "signatureHeader": "X-AT-Signature",
+    "signatureSecret": "your-secret"
+  }
+}
+```
+
+## Error Handling
+
+### Timeout
+
+If your flow takes too long, the provider may timeout:
+
+| Provider | Timeout |
+|----------|---------|
+| Africa's Talking | 30 seconds |
+| Hubtel | 20 seconds |
+| Arkesel | 25 seconds |
+| Nalo | 30 seconds |
+
+Keep API calls fast to avoid timeouts.
+
+### Error Responses
+
+StarHash returns graceful errors:
+
+```
+END Sorry, something went wrong. Please try again later.
+```
+
+Configure custom error messages in instance settings.
+
+## Monitoring
+
+### Webhook Logs
+
+View incoming requests in the dashboard:
+
+1. Go to **Instance** → **Logs**
+2. Filter by time range
+3. Click on a request to see details
+
+### Alerts
+
+Set up alerts for webhook issues:
+
+| Alert | Trigger |
+|-------|---------|
+| High error rate | > 5% errors in 5 minutes |
+| Slow response | > 2 second average |
+| No traffic | No requests in 1 hour |
+
+## Next Steps
+
+<Cards>
+  <Card title="Self-Hosting" icon="server" href="/engine/self-hosting">
+    Deploy your own instance
+  </Card>
+  <Card title="Providers" icon="plug" href="/providers">
+    Detailed provider guides
+  </Card>
+</Cards>
