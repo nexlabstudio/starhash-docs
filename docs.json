@@ -64,13 +64,6 @@
       ]
     },
     {
-      "group": "Companion App",
-      "pages": [
-        { "title": "Overview", "href": "/companion" },
-        { "title": "Testing on Device", "href": "/companion/testing" }
-      ]
-    },
-    {
       "group": "Providers",
       "pages": [
         { "title": "Overview", "href": "/providers" },
