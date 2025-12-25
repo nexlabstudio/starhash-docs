@@ -1,41 +1,13 @@
 ---
-title: Engine Overview
-description: StarHash Engine is the backend API that powers USSD flow execution.
+title: API Overview
+description: StarHash API powers USSD flow execution and management.
 ---
 
-# Engine Overview
+# API Overview
 
-The StarHash Engine is a Dart Frog backend that executes USSD flows and manages sessions.
+The StarHash API lets you programmatically manage flows, sessions, and deployments.
 
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      StarHash Engine                         │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │
-│  │   Auth   │  │  Flows   │  │ Sessions │  │ Analytics│    │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘    │
-│                                                              │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │                   Flow Executor                       │   │
-│  │  • Session management   • Variable resolution         │   │
-│  │  • Node execution       • Provider adapters           │   │
-│  └──────────────────────────────────────────────────────┘   │
-│                                                              │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │                    Data Layer                         │   │
-│  │      PostgreSQL          │         Redis              │   │
-│  │   (Flows, Users, etc.)   │   (Sessions, Cache)        │   │
-│  └──────────────────────────────────────────────────────┘   │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
-
-## Key Components
-
-### API Routes
+## API Endpoints
 
 | Route | Description |
 |-------|-------------|
@@ -47,31 +19,11 @@ The StarHash Engine is a Dart Frog backend that executes USSD flows and manages 
 | `/api/analytics` | Usage statistics |
 | `/hooks/:provider` | USSD provider callbacks |
 
-### Core Services
-
-| Service | Responsibility |
-|---------|---------------|
-| `FlowExecutor` | Executes flow logic |
-| `SessionManager` | Manages USSD sessions |
-| `AdapterService` | Translates provider formats |
-| `AuthService` | Handles authentication |
-
-## Technology Stack
-
-| Component | Technology |
-|-----------|------------|
-| Framework | Dart Frog |
-| Database | PostgreSQL |
-| Cache | Redis |
-| Auth | JWT + OAuth 2.0 |
-
 ## Base URL
 
-| Environment | URL |
-|-------------|-----|
-| Production | `https://api.starhash.dev` |
-| Staging | `https://staging-api.starhash.dev` |
-| Local | `http://localhost:8080` |
+```
+https://api.starhash.dev
+```
 
 ## Request Format
 

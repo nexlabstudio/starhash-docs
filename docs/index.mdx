@@ -63,30 +63,32 @@ StarHash is a complete platform for building USSD applications that run across m
 
 ## Example Flow
 
-```dart
-import 'package:starhash_core/starhash_core.dart';
+Here's what a simple welcome menu looks like in StarHash:
 
-final flow = UssdFlow(
-  id: 'welcome-flow',
-  name: 'Welcome Menu',
-  nodes: [
-    MenuNode(
-      id: 'main-menu',
-      title: 'Welcome to StarHash',
-      options: [
-        MenuOption(label: 'Check Balance', nextNodeId: 'balance'),
-        MenuOption(label: 'Buy Airtime', nextNodeId: 'airtime'),
-        MenuOption(label: 'Exit', nextNodeId: 'goodbye'),
-      ],
-    ),
-    // ... more nodes
-  ],
-  startNodeId: 'main-menu',
-);
+```
+┌─────────────────────────────────┐
+│         Welcome Menu            │
+│                                 │
+│  "Welcome to StarHash"          │
+│                                 │
+│  1. Check Balance  ──→ [Balance]│
+│  2. Buy Airtime    ──→ [Airtime]│
+│  3. Exit           ──→ [Goodbye]│
+│                                 │
+└─────────────────────────────────┘
+```
+
+**What users see on their phone:**
+```
+Welcome to StarHash
+1. Check Balance
+2. Buy Airtime
+3. Exit
 ```
 
 ## Need Help?
 
 - [FAQ](/resources/faq) - Common questions answered
 - [Troubleshooting](/resources/troubleshooting) - Fix common issues
-- [GitHub Issues](https://github.com/nexlabstudio/starhash/issues) - Report bugs or request features
+- [GitHub Issues](https://github.com/nexlabstudio/starhash-docs/issues) - Report bugs or request features
+- [Contact Support](mailto:support@starhash.dev) - Get help from our team

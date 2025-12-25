@@ -11,31 +11,15 @@ StarHash provides six node types to build any USSD flow.
 
 Displays a list of options for the user to choose from.
 
-### Properties
+### Configuration
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `title` | String | Text displayed above options |
-| `options` | List | Menu options (label + next node) |
-| `footer` | String | Optional text below options |
+| Field | Description |
+|-------|-------------|
+| Title | Text displayed above options |
+| Options | Menu options (label + where it goes) |
+| Footer | Optional text below options (e.g., "0. Back") |
 
-### Example
-
-```dart
-MenuNode(
-  id: 'main-menu',
-  title: 'Welcome! Select an option:',
-  options: [
-    MenuOption(label: 'Check Balance', nextNodeId: 'balance'),
-    MenuOption(label: 'Send Money', nextNodeId: 'transfer'),
-    MenuOption(label: 'Buy Airtime', nextNodeId: 'airtime'),
-    MenuOption(label: 'Help', nextNodeId: 'help'),
-  ],
-  footer: '0. Back',
-)
-```
-
-### User Sees
+### What Users See
 
 ```
 Welcome! Select an option:
@@ -58,39 +42,29 @@ Welcome! Select an option:
 
 Prompts the user to enter data.
 
-### Properties
+### Configuration
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `prompt` | String | The question or instruction |
-| `variableName` | String | Variable to store the input |
-| `validation` | Object | Optional validation rules |
-| `nextNodeId` | String | Next node after input |
+| Field | Description |
+|-------|-------------|
+| Prompt | The question or instruction |
+| Variable Name | Where to store the response |
+| Validation | Optional rules (number, phone, etc.) |
+| Next Node | Where to go after input |
 
-### Example
+### What Users See
 
-```dart
-InputNode(
-  id: 'get-amount',
-  prompt: 'Enter amount to transfer:',
-  variableName: 'amount',
-  validation: {
-    'type': 'number',
-    'min': 1,
-    'max': 10000,
-  },
-  nextNodeId: 'confirm-transfer',
-)
+```
+Enter amount to transfer:
 ```
 
 ### Validation Types
 
-| Type | Options | Description |
-|------|---------|-------------|
-| `text` | `minLength`, `maxLength`, `pattern` | Free text input |
-| `number` | `min`, `max` | Numeric input |
-| `phone` | `countryCode` | Phone number format |
-| `pin` | `length` | PIN code (masked) |
+| Type | Description |
+|------|-------------|
+| Text | Free text with optional min/max length |
+| Number | Numeric input with optional min/max value |
+| Phone | Phone number format |
+| PIN | PIN code (for secure input) |
 
 ---
 
@@ -98,23 +72,17 @@ InputNode(
 
 Shows a message and continues to the next node.
 
-### Properties
+### Configuration
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `message` | String | Text to display |
-| `nextNodeId` | String | Next node (auto-continue) |
-| `delay` | Number | Optional delay in ms |
+| Field | Description |
+|-------|-------------|
+| Message | Text to display (can include variables) |
+| Next Node | Where to go next (automatic) |
 
-### Example
+### What Users See
 
-```dart
-DisplayNode(
-  id: 'processing',
-  message: 'Processing your request...',
-  nextNodeId: 'result',
-  delay: 1000,
-)
+```
+Processing your request...
 ```
 
 ### Use Cases
@@ -129,33 +97,22 @@ DisplayNode(
 
 Routes to different nodes based on conditions.
 
-### Properties
+### Configuration
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `conditions` | List | Ordered list of conditions |
-| `defaultNodeId` | String | Fallback if no conditions match |
+| Field | Description |
+|-------|-------------|
+| Conditions | List of if/then rules |
+| Default | Where to go if no conditions match |
 
-### Example
+### Example Setup
 
-```dart
-BranchNode(
-  id: 'check-balance',
-  conditions: [
-    Condition(
-      expression: 'balance >= amount',
-      nextNodeId: 'sufficient-funds',
-    ),
-    Condition(
-      expression: 'balance > 0',
-      nextNodeId: 'insufficient-funds',
-    ),
-  ],
-  defaultNodeId: 'zero-balance',
-)
-```
+| Condition | Then go to |
+|-----------|------------|
+| balance >= amount | "Sufficient Funds" node |
+| balance > 0 | "Insufficient Funds" node |
+| (default) | "Zero Balance" node |
 
-### Expression Syntax
+### Condition Operators
 
 | Operator | Description | Example |
 |----------|-------------|---------|
@@ -174,70 +131,46 @@ BranchNode(
 
 Executes backend logic like API calls.
 
-### Properties
+### Configuration
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `actionType` | String | Type of action |
-| `config` | Object | Action-specific configuration |
-| `resultVariable` | String | Variable to store result |
-| `nextNodeId` | String | Next node on success |
-| `errorNodeId` | String | Next node on failure |
+| Field | Description |
+|-------|-------------|
+| Action Type | What to do (HTTP, SMS, Set Variable) |
+| Configuration | Settings for the action |
+| Result Variable | Where to store the result |
+| Success Node | Where to go on success |
+| Error Node | Where to go on failure |
 
 ### Action Types
 
 <Tabs>
   <TabItem label="HTTP Request">
-    Make an API call:
+    Make an API call to your backend:
 
-    ```dart
-    ActionNode(
-      id: 'fetch-balance',
-      actionType: 'http',
-      config: {
-        'url': 'https://api.example.com/balance/${phone}',
-        'method': 'GET',
-        'headers': {
-          'Authorization': 'Bearer ${apiKey}',
-        },
-      },
-      resultVariable: 'balanceData',
-      nextNodeId: 'show-balance',
-      errorNodeId: 'api-error',
-    )
-    ```
+    | Setting | Example |
+    |---------|---------|
+    | URL | `https://api.example.com/balance/${phone}` |
+    | Method | GET, POST, PUT, DELETE |
+    | Headers | Authorization tokens, etc. |
+    | Body | JSON data to send |
   </TabItem>
 
   <TabItem label="Set Variable">
-    Set or compute a variable:
+    Set or compute a variable value:
 
-    ```dart
-    ActionNode(
-      id: 'calc-fee',
-      actionType: 'setVariable',
-      config: {
-        'name': 'fee',
-        'value': 'amount * 0.01',
-      },
-      nextNodeId: 'show-fee',
-    )
-    ```
+    | Setting | Example |
+    |---------|---------|
+    | Variable Name | `fee` |
+    | Value | `amount * 0.01` |
   </TabItem>
 
   <TabItem label="Send SMS">
-    Send an SMS message:
+    Send an SMS message to the user:
 
-    ```dart
-    ActionNode(
-      id: 'send-confirmation',
-      actionType: 'sms',
-      config: {
-        'to': '${phone}',
-        'message': 'Transfer of ${amount} confirmed. Ref: ${txnId}',
-      },
-      nextNodeId: 'complete',
-    )
-    ```
+    | Setting | Example |
+    |---------|---------|
+    | To | `${phone}` |
+    | Message | `Transfer confirmed. Ref: ${txnId}` |
   </TabItem>
 </Tabs>
 
@@ -247,19 +180,17 @@ Executes backend logic like API calls.
 
 Terminates the USSD session.
 
-### Properties
+### Configuration
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `message` | String | Final message to user |
+| Field | Description |
+|-------|-------------|
+| Message | Final message shown to user |
 
-### Example
+### What Users See
 
-```dart
-EndNode(
-  id: 'success',
-  message: 'Transaction complete! Ref: ${txnId}. Thank you for using our service.',
-)
+```
+Transaction complete! Ref: TXN123.
+Thank you for using our service.
 ```
 
 ### Tips
@@ -272,14 +203,14 @@ EndNode(
 
 ## Node Reference Table
 
-| Node Type | Input | Output | Use Case |
-|-----------|-------|--------|----------|
-| Menu | 1 | N (per option) | User choices |
-| Input | 1 | 1 | Collect data |
-| Display | 1 | 1 | Show info |
-| Branch | 1 | N (per condition) | Logic routing |
-| Action | 1 | 2 (success/error) | Backend logic |
-| End | 1 | 0 | Terminate session |
+| Node Type | Outputs | Use Case |
+|-----------|---------|----------|
+| Menu | Multiple (one per option) | User choices |
+| Input | One | Collect data |
+| Display | One | Show info |
+| Branch | Multiple (one per condition) | Logic routing |
+| Action | Two (success/error) | Backend logic |
+| End | None | Terminate session |
 
 ## Next Steps
 

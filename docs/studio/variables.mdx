@@ -24,26 +24,25 @@ Your balance is ${balance} GHS.
 
 Variables are created when:
 
-1. **User input** - Input nodes store responses
+1. **User input** - Input nodes store responses in a variable you name
 2. **Action results** - API responses saved to variables
-3. **Set variable** - Explicitly set in Action nodes
+3. **Set variable** - Explicitly set using an Action node
 
 ## Variable Types
 
 ### User Input Variables
 
-Created by Input nodes:
+When you add an Input node, you specify a variable name. The user's response is stored there.
 
-```dart
-InputNode(
-  prompt: 'Enter your name:',
-  variableName: 'name',  // Creates ${name}
-)
-```
+**Example:**
+- Input prompt: "Enter your name:"
+- Variable name: `name`
+- User enters: "John"
+- Result: `${name}` = "John"
 
 ### System Variables
 
-Available in every session:
+Available automatically in every session:
 
 | Variable | Description | Example |
 |----------|-------------|---------|
@@ -55,17 +54,12 @@ Available in every session:
 
 ### Computed Variables
 
-Created by Action nodes with expressions:
+Use an Action node with "Set Variable" to compute values:
 
-```dart
-ActionNode(
-  actionType: 'setVariable',
-  config: {
-    'name': 'total',
-    'value': 'amount + fee',
-  },
-)
-```
+| Variable Name | Expression |
+|---------------|------------|
+| `total` | `amount + fee` |
+| `fee` | `amount * 0.01` |
 
 ## Expressions
 
@@ -112,57 +106,40 @@ Use expressions for dynamic values and conditions.
 
 ## Using Variables in Nodes
 
-### Menu Node
+### In Menu Titles
 
-```dart
-MenuNode(
-  title: 'Welcome ${name}! Balance: ${balance} GHS',
-  options: [...],
-)
+```
+Welcome ${name}! Balance: ${balance} GHS
 ```
 
-### Display Node
+**User sees:**
+```
+Welcome John! Balance: 500 GHS
+1. Send Money
+2. Check Balance
+```
 
-```dart
-DisplayNode(
-  message: '''
+### In Display Messages
+
+```
 Transfer Summary:
 Amount: ${amount} GHS
 Fee: ${fee} GHS
 Total: ${total} GHS
 To: ${recipientName}
-''',
-)
 ```
 
-### Branch Node
+### In Branch Conditions
 
-```dart
-BranchNode(
-  conditions: [
-    Condition(
-      expression: 'balance >= total',
-      nextNodeId: 'proceed',
-    ),
-  ],
-  defaultNodeId: 'insufficient',
-)
+| Condition | Then go to |
+|-----------|------------|
+| `balance >= total` | "Proceed" node |
+| (default) | "Insufficient Funds" node |
+
+### In API URLs
+
 ```
-
-### Action Node (HTTP)
-
-```dart
-ActionNode(
-  actionType: 'http',
-  config: {
-    'url': 'https://api.example.com/users/${phone}',
-    'method': 'POST',
-    'body': {
-      'amount': '${amount}',
-      'recipient': '${recipient}',
-    },
-  },
-)
+https://api.example.com/users/${phone}
 ```
 
 ## Working with API Responses
@@ -171,7 +148,7 @@ When an Action node makes an HTTP request, the response is stored in a variable.
 
 ### Accessing Response Data
 
-If the API returns:
+If your API returns:
 
 ```json
 {
@@ -185,93 +162,84 @@ If the API returns:
 
 Access nested properties with dot notation:
 
-```
-${response.user.name}      → "John"
-${response.user.balance}   → 500
-${response.status}         → "success"
-```
+| Expression | Result |
+|------------|--------|
+| `${response.user.name}` | "John" |
+| `${response.user.balance}` | 500 |
+| `${response.status}` | "success" |
 
 ### Array Access
 
 For arrays, use index notation:
 
-```
-${transactions[0].amount}  → First transaction amount
-${items[2].name}          → Third item name
-```
+| Expression | Result |
+|------------|--------|
+| `${transactions[0].amount}` | First transaction amount |
+| `${items[2].name}` | Third item name |
 
 ## Default Values
 
 Provide fallback values for undefined variables:
 
-```
-${name|Guest}              → Uses "Guest" if name is undefined
-${balance|0}               → Uses 0 if balance is undefined
-```
+| Expression | Result |
+|------------|--------|
+| `${name\|Guest}` | Uses "Guest" if name is undefined |
+| `${balance\|0}` | Uses 0 if balance is undefined |
 
 ## Formatting
 
 ### Numbers
 
-```
-${amount|number:2}         → "1,234.56" (2 decimal places)
-${balance|currency:GHS}    → "GHS 500.00"
-```
+| Expression | Result |
+|------------|--------|
+| `${amount\|number:2}` | "1,234.56" (2 decimal places) |
+| `${balance\|currency:GHS}` | "GHS 500.00" |
 
 ### Dates
 
-```
-${timestamp|date:short}    → "12/25/23"
-${timestamp|date:long}     → "December 25, 2023"
-${timestamp|time}          → "14:30"
-```
+| Expression | Result |
+|------------|--------|
+| `${timestamp\|date:short}` | "12/25/23" |
+| `${timestamp\|date:long}` | "December 25, 2023" |
+| `${timestamp\|time}` | "14:30" |
 
 ### Phone Numbers
 
-```
-${phone|phone:local}       → "020 123 4567"
-${phone|phone:intl}        → "+233 20 123 4567"
-```
+| Expression | Result |
+|------------|--------|
+| `${phone\|phone:local}` | "020 123 4567" |
+| `${phone\|phone:intl}` | "+233 20 123 4567" |
 
 ## Best Practices
 
 ### Naming Conventions
 
-```
-Good: userName, accountBalance, transferAmount
-Bad: x, temp, data1
-```
+Use clear, descriptive names:
+
+| Good | Bad |
+|------|-----|
+| `userName` | `x` |
+| `accountBalance` | `temp` |
+| `transferAmount` | `data1` |
 
 ### Validation
 
-Always validate user input:
+Always validate user input. In Input nodes, set validation rules:
 
-```dart
-InputNode(
-  variableName: 'amount',
-  validation: {
-    'type': 'number',
-    'min': 1,
-    'max': 10000,
-  },
-)
-```
+| Validation Type | Settings |
+|-----------------|----------|
+| Number | Min: 1, Max: 10000 |
+| Phone | Country: GH |
+| Text | Min length: 3 |
 
 ### Error Handling
 
-Check for undefined variables:
+Use Branch nodes to check for undefined variables before using them:
 
-```dart
-BranchNode(
-  conditions: [
-    Condition(
-      expression: 'balance != undefined',
-      nextNodeId: 'show-balance',
-    ),
-  ],
-  defaultNodeId: 'fetch-balance',
-)
-```
+| Condition | Then go to |
+|-----------|------------|
+| `balance != undefined` | "Show Balance" node |
+| (default) | "Fetch Balance" node |
 
 ## Next Steps
 

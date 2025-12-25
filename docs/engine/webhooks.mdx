@@ -185,33 +185,29 @@ Examples:
 
 ## Testing Webhooks
 
-### Using cURL
+### Using the Simulator
 
-Test your webhook locally:
+The easiest way to test your webhooks:
 
-```bash
-# Africa's Talking format
-curl -X POST http://localhost:8080/hooks/africas_talking/inst_test \
-  -d "sessionId=test123&phoneNumber=%2B233201234567&text=&serviceCode=*123#"
+1. Open your flow in Studio
+2. Click **Test** to open the simulator
+3. The simulator mimics real provider requests
 
-# Hubtel format
-curl -X POST http://localhost:8080/hooks/hubtel/inst_test \
-  -H "Content-Type: application/json" \
-  -d '{"SessionId":"test123","Mobile":"233201234567","Message":"","Type":"Initiation"}'
-```
+### Using Provider Sandbox
 
-### Using ngrok
+Most providers offer sandbox environments:
 
-Expose your local server for provider testing:
+1. Enable sandbox mode in your provider dashboard
+2. Use sandbox API credentials in StarHash
+3. Test with the provider's simulator
 
-```bash
-ngrok http 8080
-```
+### Verifying Webhook Configuration
 
-Use the ngrok URL as your callback:
-```
-https://abc123.ngrok.io/hooks/africas_talking/inst_test
-```
+Check that your webhook is receiving traffic:
+
+1. Go to **Instance** → **Logs**
+2. View incoming webhook requests
+3. Check for any errors in the response
 
 ## Webhook Security
 

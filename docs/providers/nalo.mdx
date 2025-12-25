@@ -185,19 +185,12 @@ MSISDN format: 234XXXXXXXXXX
 
 ### Country Detection
 
-StarHash automatically detects the country from the phone number:
+StarHash automatically detects the country from the phone number. Use a Branch node to route users based on their location:
 
-```dart
-BranchNode(
-  conditions: [
-    Condition(
-      expression: '$phone.startsWith("234")',
-      nextNodeId: 'nigeria-flow',
-    ),
-  ],
-  defaultNodeId: 'ghana-flow',
-)
-```
+| Condition | Then go to |
+|-----------|------------|
+| `$phone.startsWith("234")` | Nigeria Flow |
+| (default) | Ghana Flow |
 
 ## SMS Integration
 

@@ -183,19 +183,12 @@ Trigger mobile money payments from Action nodes:
 
 ### Payment Status
 
-Check payment status in your flow:
+Check payment status in your flow using a Branch node:
 
-```dart
-BranchNode(
-  conditions: [
-    Condition(
-      expression: 'paymentStatus == "success"',
-      nextNodeId: 'payment-success',
-    ),
-  ],
-  defaultNodeId: 'payment-failed',
-)
-```
+| Condition | Then go to |
+|-----------|------------|
+| `paymentStatus == "success"` | Payment Success node |
+| (default) | Payment Failed node |
 
 ## Best Practices
 

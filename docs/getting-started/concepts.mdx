@@ -23,23 +23,22 @@ USSD (Unstructured Supplementary Service Data) is a protocol used by GSM phones 
 
 A **flow** is a complete USSD application. It defines all the screens, logic, and data handling for your service.
 
-```dart
-UssdFlow(
-  id: 'balance-checker',
-  name: 'Balance Checker',
-  nodes: [...],
-  startNodeId: 'welcome',
-)
+In Studio, a flow looks like a flowchart:
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   Welcome   │ ──→ │  Get Name   │ ──→ │   Confirm   │
+│   (Menu)    │     │   (Input)   │     │   (End)     │
+└─────────────┘     └─────────────┘     └─────────────┘
 ```
 
 ### Flow Properties
 
 | Property | Description |
 |----------|-------------|
-| `id` | Unique identifier |
-| `name` | Human-readable name |
-| `nodes` | List of all nodes in the flow |
-| `startNodeId` | ID of the first node to execute |
+| Name | Human-readable name for your flow |
+| Start Node | The first screen users see |
+| Nodes | All the screens and actions in your flow |
 
 ## Nodes
 
@@ -51,120 +50,71 @@ UssdFlow(
   <TabItem label="Menu">
     Displays options for the user to choose from.
 
-    ```dart
-    MenuNode(
-      id: 'main-menu',
-      title: 'Select an option:',
-      options: [
-        MenuOption(label: 'Balance', nextNodeId: 'balance'),
-        MenuOption(label: 'Transfer', nextNodeId: 'transfer'),
-      ],
-    )
-    ```
-
-    **User sees:**
+    **What users see:**
     ```
     Select an option:
-    1. Balance
-    2. Transfer
+    1. Check Balance
+    2. Send Money
     ```
+
+    Each option connects to a different node.
   </TabItem>
 
   <TabItem label="Input">
     Prompts the user to enter data.
 
-    ```dart
-    InputNode(
-      id: 'get-phone',
-      prompt: 'Enter phone number:',
-      variableName: 'phone',
-      nextNodeId: 'confirm',
-    )
-    ```
-
-    **User sees:**
+    **What users see:**
     ```
     Enter phone number:
     ```
+
+    The response is saved to a variable you can use later.
   </TabItem>
 
   <TabItem label="Display">
     Shows a message and continues to the next node.
 
-    ```dart
-    DisplayNode(
-      id: 'balance',
-      message: 'Your balance is \${balance}',
-      nextNodeId: 'main-menu',
-    )
+    **What users see:**
     ```
+    Processing your request...
+    ```
+
+    Automatically moves to the next node.
   </TabItem>
 
   <TabItem label="End">
     Terminates the session with a final message.
 
-    ```dart
-    EndNode(
-      id: 'goodbye',
-      message: 'Thank you for using our service!',
-    )
+    **What users see:**
     ```
+    Thank you for using our service!
+    ```
+
+    The session ends and the user is disconnected.
   </TabItem>
 
   <TabItem label="Branch">
     Routes to different nodes based on conditions.
 
-    ```dart
-    BranchNode(
-      id: 'check-balance',
-      conditions: [
-        Condition(
-          expression: 'balance > 100',
-          nextNodeId: 'high-balance',
-        ),
-        Condition(
-          expression: 'balance > 0',
-          nextNodeId: 'low-balance',
-        ),
-      ],
-      defaultNodeId: 'zero-balance',
-    )
-    ```
+    **Example conditions:**
+    - If balance > 100 → go to "High Balance" node
+    - If balance > 0 → go to "Low Balance" node
+    - Otherwise → go to "Zero Balance" node
   </TabItem>
 
   <TabItem label="Action">
-    Executes backend logic (API calls, database operations).
+    Executes backend logic like API calls.
 
-    ```dart
-    ActionNode(
-      id: 'fetch-balance',
-      actionType: 'http',
-      config: {
-        'url': 'https://api.example.com/balance',
-        'method': 'GET',
-      },
-      resultVariable: 'balance',
-      nextNodeId: 'show-balance',
-    )
-    ```
+    **Example actions:**
+    - Fetch user balance from your API
+    - Send an SMS confirmation
+    - Process a payment
   </TabItem>
 </Tabs>
 
 ## Sessions
 
 A **session** represents a single user interaction from dial to end.
-
-```dart
-UssdSession(
-  id: 'sess_abc123',
-  flowId: 'balance-checker',
-  phoneNumber: '+233201234567',
-  provider: 'africas_talking',
-  variables: {'balance': '50.00'},
-  currentNodeId: 'main-menu',
-  state: SessionState.active,
-)
-```
 
 ### Session Lifecycle
 
@@ -182,10 +132,10 @@ End node reached → Session terminated
 
 | State | Description |
 |-------|-------------|
-| `active` | Session is ongoing |
-| `completed` | User reached an End node |
-| `timeout` | Session expired due to inactivity |
-| `error` | An error occurred during execution |
+| Active | Session is ongoing |
+| Completed | User reached an End node |
+| Timeout | Session expired due to inactivity |
+| Error | An error occurred during execution |
 
 ## Variables
 
@@ -222,7 +172,7 @@ Your balance is ${balance} GHS.
 - Arkesel
 - Nalo
 
-Each provider has a different request/response format. StarHash adapters handle the translation automatically.
+Each provider has a different format. StarHash handles the translation automatically—you just design your flow once.
 
 ## Next Steps
 
