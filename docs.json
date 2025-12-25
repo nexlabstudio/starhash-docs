@@ -32,11 +32,6 @@
       "href": "/"
     },
     {
-      "id": "api",
-      "title": "API Reference",
-      "href": "/engine"
-    },
-    {
       "id": "providers",
       "title": "Providers",
       "href": "/providers"
@@ -71,16 +66,6 @@
         { "title": "Hubtel", "href": "/providers/hubtel" },
         { "title": "Arkesel", "href": "/providers/arkesel" },
         { "title": "Nalo", "href": "/providers/nalo" }
-      ]
-    },
-    {
-      "group": "API Reference",
-      "pages": [
-        { "title": "Overview", "href": "/engine" },
-        { "title": "Authentication", "href": "/engine/authentication" },
-        { "title": "Endpoints", "href": "/engine/api-reference" },
-        { "title": "Webhooks", "href": "/engine/webhooks" },
-        { "title": "Enterprise", "href": "/engine/self-hosting" }
       ]
     },
     {
