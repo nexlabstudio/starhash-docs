@@ -62,108 +62,17 @@ https://api.starhash.dev/hooks/nalo/{instance_id}
 3. Select the Nalo instance
 4. Click **Publish**
 
-## Request/Response Format
+## Session Timeout
 
-### Incoming Request
+Sessions timeout after **3 minutes** of inactivity. Design flows to complete within this window.
 
-Nalo sends URL-encoded form data:
+## Troubleshooting
 
-```
-POST /hooks/nalo/{instance_id}
-Content-Type: application/x-www-form-urlencoded
-
-USERID=233201234567
-&MSISDN=233201234567
-&USERDATA=1
-&MSGTYPE=1
-&SESSIONID=nalo_abc123
-&NETWORK=MTN
-```
-
-| Field | Description |
-|-------|-------------|
-| `SESSIONID` | Unique session identifier |
-| `MSISDN` | User's phone number |
-| `USERDATA` | User input |
-| `MSGTYPE` | 1 (continue) or 2 (end) |
-| `NETWORK` | Network operator |
-| `USERID` | Same as MSISDN |
-
-### Message Types
-
-| MSGTYPE | Description |
-|---------|-------------|
-| `1` | Continue session |
-| `2` | End session |
-
-### Response Format
-
-StarHash responds with URL-encoded data:
-
-```
-MSGTYPE=1&MSG=Welcome to StarHash%0A1. Check Balance%0A2. Send Money
-```
-
-| Field | Description |
-|-------|-------------|
-| `MSGTYPE` | 1 to continue, 2 to end |
-| `MSG` | URL-encoded message text |
-
-## Session Behavior
-
-### Session Start
-
-When a user dials your shortcode:
-
-```
-MSGTYPE=1
-USERDATA=   (empty for initial dial)
-SESSIONID=nalo_abc123
-```
-
-### Session Input
-
-When user responds:
-
-```
-MSGTYPE=1
-USERDATA=1
-SESSIONID=nalo_abc123
-```
-
-### Session End
-
-When session ends:
-
-```
-MSGTYPE=2
-USERDATA=
-SESSIONID=nalo_abc123
-```
-
-### Session Timeout
-
-- Sessions timeout after **3 minutes**
-- Nalo sends `MSGTYPE=2` on timeout
-- Design flows for this duration
-
-## Error Handling
-
-### Common Errors
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `Invalid API Key` | Wrong key | Verify in settings |
-| `Invalid Shortcode` | Wrong code | Check shortcode config |
-| `Session expired` | Timeout occurred | Sessions last 3 minutes |
-
-### Error Response
-
-Return an error message:
-
-```
-MSGTYPE=2&MSG=Sorry, an error occurred. Please try again.
-```
+| Invalid API Key | Wrong key | Verify in settings |
+| Invalid Shortcode | Wrong code | Check shortcode configuration |
+| Session expired | Timeout occurred | Sessions last 3 minutes |
 
 ## Multi-Country Support
 
@@ -231,7 +140,7 @@ Contact Nalo for exact pricing and volume discounts.
   <Card title="Deployment" icon="rocket" href="/studio/deployment">
     Deploy your flow
   </Card>
-  <Card title="Webhooks" icon="webhook" href="/engine/webhooks">
-    Advanced webhook configuration
+  <Card title="Testing" icon="play" href="/studio/testing">
+    Test in the simulator
   </Card>
 </Cards>

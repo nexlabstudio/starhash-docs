@@ -83,87 +83,17 @@ Africa's Talking provides a free sandbox for testing:
 - Limited to simulator testing
 - Free, no charges
 
-## Request/Response Format
+## Session Timeout
 
-### Incoming Request
+Sessions timeout after **3 minutes** of inactivity. Design your flows to complete within this window.
 
-Africa's Talking sends this format:
+## Troubleshooting
 
-```
-POST /hooks/africas_talking/{instance_id}
-Content-Type: application/x-www-form-urlencoded
-
-sessionId=ATUid_xxx
-&phoneNumber=%2B254701234567
-&text=1*2*100
-&serviceCode=*384*123#
-```
-
-| Field | Description |
-|-------|-------------|
-| `sessionId` | Unique session identifier |
-| `phoneNumber` | User's phone (E.164 format) |
-| `text` | User input (concatenated with `*`) |
-| `serviceCode` | Your shortcode |
-
-### Response Format
-
-StarHash responds with:
-
-```
-CON Select an option:
-1. Check Balance
-2. Send Money
-```
-
-| Prefix | Meaning |
-|--------|---------|
-| `CON` | Continue session (expect more input) |
-| `END` | End session (final message) |
-
-## Session Behavior
-
-### Text Concatenation
-
-Africa's Talking concatenates all inputs with `*`:
-
-```
-User dials: *384*123#
-First input: 1
-Text value: "1"
-
-Second input: 2
-Text value: "1*2"
-
-Third input: 100
-Text value: "1*2*100"
-```
-
-StarHash handles this automatically - you work with individual inputs.
-
-### Session Timeout
-
-- Sessions timeout after **3 minutes** of inactivity
-- Timeout triggers an implicit `END`
-- StarHash marks the session as `timeout`
-
-## Error Handling
-
-### Common Errors
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `InvalidCallback` | Wrong callback URL | Verify the URL format |
-| `InvalidCredentials` | Wrong API key | Check credentials in settings |
-| `SessionNotFound` | Expired session | Sessions last 3 minutes |
-
-### Retry Logic
-
-If StarHash fails to respond:
-
-1. Africa's Talking waits 30 seconds
-2. If no response, session ends with error
-3. User sees a generic error message
+| Invalid callback URL | Wrong URL format | Copy the exact URL from StarHash |
+| Invalid credentials | Wrong API key | Re-enter credentials in settings |
+| Session not found | Session expired | Sessions last 3 minutes |
 
 ## Best Practices
 
@@ -190,7 +120,7 @@ Check [Africa's Talking Pricing](https://africastalking.com/pricing) for current
   <Card title="Deployment" icon="rocket" href="/studio/deployment">
     Deploy your flow
   </Card>
-  <Card title="Webhooks" icon="webhook" href="/engine/webhooks">
-    Advanced webhook configuration
+  <Card title="Testing" icon="play" href="/studio/testing">
+    Test in the simulator
   </Card>
 </Cards>

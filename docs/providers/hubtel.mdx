@@ -61,106 +61,17 @@ https://api.starhash.dev/hooks/hubtel/{instance_id}
 3. Select the Hubtel instance
 4. Click **Publish**
 
-## Request/Response Format
+## Session Timeout
 
-### Incoming Request
+Sessions timeout after **2 minutes** of inactivity. Design flows for shorter sessions compared to other providers.
 
-Hubtel sends JSON payloads:
+## Troubleshooting
 
-```json
-POST /hooks/hubtel/{instance_id}
-Content-Type: application/json
-
-{
-  "SessionId": "hub_abc123",
-  "Mobile": "233201234567",
-  "Message": "1",
-  "ServiceCode": "*713*5#",
-  "Type": "Initiation",
-  "Operator": "MTN"
-}
-```
-
-| Field | Description |
-|-------|-------------|
-| `SessionId` | Unique session identifier |
-| `Mobile` | User's phone number |
-| `Message` | Current user input |
-| `ServiceCode` | Your shortcode |
-| `Type` | Initiation, Response, or Release |
-| `Operator` | Network operator |
-
-### Message Types
-
-| Type | Description |
-|------|-------------|
-| `Initiation` | User dialed the shortcode |
-| `Response` | User sent a response |
-| `Release` | Session ended by user |
-
-### Response Format
-
-StarHash responds with:
-
-```json
-{
-  "Type": "Response",
-  "Message": "Welcome to StarHash\n1. Check Balance\n2. Send Money",
-  "Label": "Main Menu",
-  "ClientState": "state_data"
-}
-```
-
-| Field | Description |
-|-------|-------------|
-| `Type` | Response (continue) or Release (end) |
-| `Message` | Text to display |
-| `Label` | Optional label for logging |
-| `ClientState` | Optional state data |
-
-## Session Behavior
-
-### Input Handling
-
-Unlike Africa's Talking, Hubtel sends individual inputs:
-
-```
-User dials: *713*5#
-Type: Initiation
-Message: "" (empty)
-
-User enters: 1
-Type: Response
-Message: "1"
-
-User enters: 2
-Type: Response
-Message: "2"
-```
-
-### Session Timeout
-
-- Sessions timeout after **2 minutes** of inactivity
-- Hubtel sends a `Release` message on timeout
-- Design flows for shorter sessions
-
-## Error Handling
-
-### Common Errors
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `401 Unauthorized` | Invalid credentials | Check Client ID/Secret |
-| `404 Not Found` | Invalid callback URL | Verify the URL |
-| `Timeout` | Response took too long | Optimize flow speed |
-
-### Retry Logic
-
-If StarHash fails to respond:
-
-1. Hubtel waits 20 seconds
-2. Retries once
-3. If still failing, ends session with error
+| Unauthorized error | Invalid credentials | Check Client ID/Secret |
+| Callback not found | Invalid URL | Verify the callback URL |
+| Response timeout | Slow response | Optimize flow speed |
 
 ## Mobile Money Integration
 
@@ -211,7 +122,7 @@ Contact Hubtel for current pricing:
   <Card title="Deployment" icon="rocket" href="/studio/deployment">
     Deploy your flow
   </Card>
-  <Card title="Webhooks" icon="webhook" href="/engine/webhooks">
-    Advanced webhook configuration
+  <Card title="Testing" icon="play" href="/studio/testing">
+    Test in the simulator
   </Card>
 </Cards>

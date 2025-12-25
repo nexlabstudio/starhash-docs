@@ -59,98 +59,25 @@ https://api.starhash.dev/hooks/arkesel/{instance_id}
 3. Select the Arkesel instance
 4. Click **Publish**
 
-## Request/Response Format
+## Session Timeout
 
-### Incoming Request
+Sessions timeout after **2.5 minutes** of inactivity.
 
-Arkesel sends JSON payloads:
+## Troubleshooting
 
-```json
-POST /hooks/arkesel/{instance_id}
-Content-Type: application/json
-
-{
-  "sessionID": "ark_abc123",
-  "userID": "233201234567",
-  "newSession": true,
-  "msisdn": "233201234567",
-  "userData": "",
-  "network": "MTN"
-}
-```
-
-| Field | Description |
-|-------|-------------|
-| `sessionID` | Unique session identifier |
-| `userID` | User's phone number |
-| `newSession` | True if session just started |
-| `msisdn` | Phone number (same as userID) |
-| `userData` | User input |
-| `network` | Network operator |
-
-### Response Format
-
-StarHash responds with:
-
-```json
-{
-  "sessionID": "ark_abc123",
-  "msisdn": "233201234567",
-  "message": "Welcome!\n1. Check Balance\n2. Send Money",
-  "continueSession": true
-}
-```
-
-| Field | Description |
-|-------|-------------|
-| `sessionID` | Echo the session ID |
-| `msisdn` | Echo the phone number |
-| `message` | Text to display |
-| `continueSession` | True to continue, false to end |
-
-## Session Behavior
-
-### New Session Detection
-
-Arkesel indicates new sessions with `newSession: true`:
-
-```json
-// First request
-{
-  "newSession": true,
-  "userData": ""
-}
-
-// Subsequent requests
-{
-  "newSession": false,
-  "userData": "1"
-}
-```
-
-### Session Timeout
-
-- Sessions timeout after **2.5 minutes**
-- StarHash receives no notification on timeout
-- Sessions are marked as `timeout` automatically
-
-## Error Handling
-
-### Common Errors
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `Invalid API Key` | Wrong key | Check API key in settings |
-| `Shortcode not found` | Wrong shortcode | Verify shortcode |
-| `Response timeout` | Slow response | Optimize flow speed |
+| Invalid API Key | Wrong key | Check API key in settings |
+| Shortcode not found | Wrong shortcode | Verify shortcode configuration |
+| Response timeout | Slow response | Optimize flow speed |
 
-### Fallback Message
+## Error Messages
 
-Configure a fallback for errors:
+Configure a fallback error message:
 
 1. Go to **Instance Settings** → **Error Handling**
 2. Set a custom error message
-3. This displays when StarHash errors occur
+3. This displays when errors occur
 
 ## SMS Integration
 
@@ -199,7 +126,7 @@ Arkesel USSD pricing:
   <Card title="Deployment" icon="rocket" href="/studio/deployment">
     Deploy your flow
   </Card>
-  <Card title="Webhooks" icon="webhook" href="/engine/webhooks">
-    Advanced webhook configuration
+  <Card title="Testing" icon="play" href="/studio/testing">
+    Test in the simulator
   </Card>
 </Cards>
