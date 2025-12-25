@@ -47,7 +47,7 @@ In Studio, a flow looks like a flowchart:
 ### Node Types
 
 <Tabs>
-  <TabItem label="Menu">
+  <TabItem label="Menu" value="menu">
     Displays options for the user to choose from.
 
     **What users see:**
@@ -60,7 +60,7 @@ In Studio, a flow looks like a flowchart:
     Each option connects to a different node.
   </TabItem>
 
-  <TabItem label="Input">
+  <TabItem label="Input" value="input">
     Prompts the user to enter data.
 
     **What users see:**
@@ -71,7 +71,7 @@ In Studio, a flow looks like a flowchart:
     The response is saved to a variable you can use later.
   </TabItem>
 
-  <TabItem label="Display">
+  <TabItem label="Display" value="display">
     Shows a message and continues to the next node.
 
     **What users see:**
@@ -82,7 +82,7 @@ In Studio, a flow looks like a flowchart:
     Automatically moves to the next node.
   </TabItem>
 
-  <TabItem label="End">
+  <TabItem label="End" value="end">
     Terminates the session with a final message.
 
     **What users see:**
@@ -93,7 +93,7 @@ In Studio, a flow looks like a flowchart:
     The session ends and the user is disconnected.
   </TabItem>
 
-  <TabItem label="Branch">
+  <TabItem label="Branch" value="branch">
     Routes to different nodes based on conditions.
 
     **Example conditions:**
@@ -102,7 +102,7 @@ In Studio, a flow looks like a flowchart:
     - Otherwise → go to "Zero Balance" node
   </TabItem>
 
-  <TabItem label="Action">
+  <TabItem label="Action" value="action">
     Executes backend logic like API calls.
 
     **Example actions:**
